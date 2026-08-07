@@ -1,0 +1,37 @@
+# ЗУ
+
+3 cards, 30 instructions, 0 empty slots
+3 direct jumps, 2 of them inside the deck (66.7 %), 1 backwards (loops); 2 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        Чт 189   cell 189 - read the cell into the accumulator, S := a
+001     1       Умн 088   cell 088 - multiplication, S := S * a
+002     1        Сл 087   cell 087 - addition, S := S + a
+003     1        Зп 078   cell 078 - write the accumulator to the cell, a := S
+004     1        Чт 090   cell 090 - read the cell into the accumulator, S := a
+005     1        Зп 100   cell 100 - write the accumulator to the cell, a := S
+006     1       Слф 088   cell 088 - fixed-point addition
+007     1        Зп 078   cell 078 - write the accumulator to the cell, a := S
+008     1       Слф 098   cell 098 - fixed-point addition
+009     1        Зп 178   cell 178 - write the accumulator to the cell, a := S
+010 →   2        Чт 051   cell 051 - read the cell into the accumulator, S := a
+011     2        Зп 178   cell 178 - write the accumulator to the cell, a := S
+012     2      ЗпII 078   cell 078 - write through a second-rank address
+013     2      ЗпII 178   cell 178 - write through a second-rank address
+014     2        Чт 100   cell 100 - read the cell into the accumulator, S := a
+015     2       Слф 079   cell 079 - fixed-point addition
+016     2       УП1 022   instruction 022 - conditional jump to k if S = 0
+017     2        Чт 051   cell 051 - read the cell into the accumulator, S := a
+018     2        Зп 000   cell 000 - write the accumulator to the cell, a := S
+019     2     sh/СчП 079   cell 079 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+020     3        Чт 179   cell 179 - read the cell into the accumulator, S := a
+021     3        Зп 079   cell 079 - write the accumulator to the cell, a := S
+022 →   3     sh/СчП 100   cell 100 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+023     3     sh/СчП 078   cell 078 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+024     3     sh/СчП 178   cell 178 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+025     3        Чт 078   cell 078 - read the cell into the accumulator, S := a
+026     3      Выч1 086   cell 086 - subtraction, S := S - a
+027     3        Зп 078   cell 078 - write the accumulator to the cell, a := S
+028     3       УП2 050   instruction 050 - conditional jump to k if S < 0
+029     3        БП 010   instruction 010 - unconditional jump to k

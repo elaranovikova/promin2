@@ -1,0 +1,47 @@
+# Определение_средне_квадратичного_(4)
+
+4 cards, 40 instructions, 0 empty slots
+1 direct jumps, 1 of them inside the deck (100.0 %), 1 backwards (loops); 4 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1      ЧтII 100   cell 100 - read through a second-rank address
+001     1       cos 102   cell 102 - S := cos S
+002     1        Зп 103   cell 103 - write the accumulator to the cell, a := S
+003     1       cos 102   cell 102 - S := cos S
+004     1         ? 002   cell 002 - no entry in table 5
+005 →   1      Вычф 102   cell 102 - fixed-point subtraction
+006     1      ЧтII 102   cell 102 - read through a second-rank address
+007     1         ? 002   cell 002 - no entry in table 5
+008     1        Зп 102   cell 102 - write the accumulator to the cell, a := S
+009     1      Выч2 102   cell 102 - reverse subtraction, S := a - S
+010     2        Чт 101   cell 101 - read the cell into the accumulator, S := a
+011     2        Зп 102   cell 102 - write the accumulator to the cell, a := S
+012     2        Чт 000   cell 000 - read the cell into the accumulator, S := a
+013     2        Зп 103   cell 103 - write the accumulator to the cell, a := S
+014     2        Зп 104   cell 104 - write the accumulator to the cell, a := S
+015     2        Чт 000   cell 000 - read the cell into the accumulator, S := a
+016     2        Зп 105   cell 105 - write the accumulator to the cell, a := S
+017     2      ЧтII 102   cell 102 - read through a second-rank address
+018     2        Зп 105   cell 105 - write the accumulator to the cell, a := S
+019     2        Сл 103   cell 103 - addition, S := S + a
+020     3        Зп 103   cell 103 - write the accumulator to the cell, a := S
+021     3      ЧтII 102   cell 102 - read through a second-rank address
+022     3       Умн 105   cell 105 - multiplication, S := S * a
+023     3        Сл 104   cell 104 - addition, S := S + a
+024     3        Зп 104   cell 104 - write the accumulator to the cell, a := S
+025     3     sh/СчП 102   cell 102 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+026     3       УП1 005   instruction 005 - conditional jump to k if S = 0
+027     3        Чт 103   cell 103 - read the cell into the accumulator, S := a
+028     3       Умн 103   cell 103 - multiplication, S := S * a
+029     3       Дел 106   cell 106 - division, S := S / a
+030     4        Зп 110   cell 110 - write the accumulator to the cell, a := S
+031     4        Чт 104   cell 104 - read the cell into the accumulator, S := a
+032     4      Выч1 107   cell 107 - subtraction, S := S - a
+033     4       Дел 108   cell 108 - division, S := S / a
+034     4         √ 000   cell 000 - S := square root of S
+035     4       Ост 001   cell 001 - halt (or print the accumulator)
+036     4        Зп 109   cell 109 - write the accumulator to the cell, a := S
+037     4       Дел 110   cell 110 - division, S := S / a
+038     4       Ост 001   cell 001 - halt (or print the accumulator)
+039     4        Зп 111   cell 111 - write the accumulator to the cell, a := S

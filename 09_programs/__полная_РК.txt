@@ -1,0 +1,57 @@
+# !_полная_РК
+
+5 cards, 50 instructions, 0 empty slots
+9 direct jumps, 8 of them inside the deck (88.9 %), 3 backwards (loops); 9 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        БП 040   instruction 040 - unconditional jump to k
+001     1        БП 004   instruction 004 - unconditional jump to k
+002     1        БП 045   instruction 045 - unconditional jump to k
+003     1        БП 047   instruction 047 - unconditional jump to k
+004 →   1        Чт 086   cell 086 - read the cell into the accumulator, S := a
+005 →   1        Зп 073   cell 073 - write the accumulator to the cell, a := S
+006     1        Чт 075   cell 075 - read the cell into the accumulator, S := a
+007 →   1        Зп 076   cell 076 - write the accumulator to the cell, a := S
+008     1        Чт 051   cell 051 - read the cell into the accumulator, S := a
+009     1        Зп 071   cell 071 - write the accumulator to the cell, a := S
+010     2      ЧтII 063   cell 063 - read through a second-rank address
+011     2       Умн 071   cell 071 - multiplication, S := S * a
+012     2       Умн 073   cell 073 - multiplication, S := S * a
+013     2        Зп 077   cell 077 - write the accumulator to the cell, a := S
+014     2       Умн 076   cell 076 - multiplication, S := S * a
+015     2        Зп 078   cell 078 - write the accumulator to the cell, a := S
+016     2      ЧтII 061   cell 061 - read through a second-rank address
+017     2        Сл 078   cell 078 - addition, S := S + a
+018     2      ЗпII 061   cell 061 - write through a second-rank address
+019     2      ЧтII 066   cell 066 - read through a second-rank address
+020     3        Сл 077   cell 077 - addition, S := S + a
+021     3      ЗпII 062   cell 062 - write through a second-rank address
+022 →   3        Чт 061   cell 061 - read the cell into the accumulator, S := a
+023     3       Слф 090   cell 090 - fixed-point addition
+024     3        Зп 061   cell 061 - write the accumulator to the cell, a := S
+025     3       Слф 078   cell 078 - fixed-point addition
+026     3        Зп 062   cell 062 - write the accumulator to the cell, a := S
+027     3       Слф 078   cell 078 - fixed-point addition
+028     3        Зп 063   cell 063 - write the accumulator to the cell, a := S
+029     3       Слф 078   cell 078 - fixed-point addition
+030     4        Зп 066   cell 066 - write the accumulator to the cell, a := S
+031     4      Вычф 079   cell 079 - fixed-point subtraction
+032     4       УП1 049   instruction 049 - conditional jump to k if S = 0
+033     4        Зп 061   cell 061 - write the accumulator to the cell, a := S
+034     4        Чт 090   cell 090 - read the cell into the accumulator, S := a
+035     4       Слф 067   cell 067 - fixed-point addition
+036     4        Зп 067   cell 067 - write the accumulator to the cell, a := S
+037     4      Вычф 077   cell 077 - fixed-point subtraction
+038     4       УП1 050   instruction 050 - conditional jump to k if S = 0
+039     4        Зп 067   cell 067 - write the accumulator to the cell, a := S
+040 →   5      ЧтII 061   cell 061 - read through a second-rank address
+041     5      ЗпII 062   cell 062 - write through a second-rank address
+042     5      ЗпII 066   cell 066 - write through a second-rank address
+043     5       Ост 001   cell 001 - halt (or print the accumulator)
+044     5        БП 022   instruction 022 - unconditional jump to k
+045 →   5        Чт 076   cell 076 - read the cell into the accumulator, S := a
+046     5        БП 007   instruction 007 - unconditional jump to k
+047 →   5        Чт 087   cell 087 - read the cell into the accumulator, S := a
+048     5        БП 005   instruction 005 - unconditional jump to k
+049 →   5      БПII 067   cell 067 - jump through a second-rank address

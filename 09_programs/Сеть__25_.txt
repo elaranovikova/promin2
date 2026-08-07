@@ -1,0 +1,137 @@
+# Сеть_(25)
+
+13 cards, 130 instructions, 0 empty slots
+16 direct jumps, 15 of them inside the deck (93.8 %), 8 backwards (loops); 16 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        Чт 001   cell 001 - read the cell into the accumulator, S := a
+001     1        Зп 021   cell 021 - write the accumulator to the cell, a := S
+002     1        Чт 003   cell 003 - read the cell into the accumulator, S := a
+003     1        Зп 016   cell 016 - write the accumulator to the cell, a := S
+004 →   1        Зп 050   cell 050 - write the accumulator to the cell, a := S
+005     1        Чт 000   cell 000 - read the cell into the accumulator, S := a
+006 →   1      ЗпII 050   cell 050 - write through a second-rank address
+007     1     sh/СчП 050   cell 050 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+008     1       УП1 085   instruction 085 - conditional jump to k if S = 0
+009     1        Чт 009   cell 009 - read the cell into the accumulator, S := a
+010     2        Зп 138   cell 138 - write the accumulator to the cell, a := S
+011     2      ЧтII 021   cell 021 - read through a second-rank address
+012     2        Зп 050   cell 050 - write the accumulator to the cell, a := S
+013     2        Чт 021   cell 021 - read the cell into the accumulator, S := a
+014     2        Фр 086   cell 086 - sign transfer, S := |S| * sign a
+015     2       Слф 001   cell 001 - fixed-point addition
+016     2        Зп 100   cell 100 - write the accumulator to the cell, a := S
+017     2      ЧтII 100   cell 100 - read through a second-rank address
+018     2        Зп 015   cell 015 - write the accumulator to the cell, a := S
+019     2        Чт 000   cell 000 - read the cell into the accumulator, S := a
+020     3        Зп 050   cell 050 - write the accumulator to the cell, a := S
+021     3        Чт 007   cell 007 - read the cell into the accumulator, S := a
+022     3        Зп 140   cell 140 - write the accumulator to the cell, a := S
+023     3        Чт 179   cell 179 - read the cell into the accumulator, S := a
+024     3      Выч1 086   cell 086 - subtraction, S := S - a
+025     3        Зп 179   cell 179 - write the accumulator to the cell, a := S
+026     3       УП2 130   instruction 130 - conditional jump to k if S < 0
+027     3     sh/СчП 050   cell 050 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+028     3        Зп 050   cell 050 - write the accumulator to the cell, a := S
+029     3        БП 123   instruction 123 - unconditional jump to k
+030     4      БПII 140   cell 140 - jump through a second-rank address
+031 →   4      ЧтII 050   cell 050 - read through a second-rank address
+032     4      Выч1 015   cell 015 - subtraction, S := S - a
+033     4      ЗпII 016   cell 016 - write through a second-rank address
+034 →   4     sh/СчП 016   cell 016 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+035     4     sh/СчП 021   cell 021 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+036     4       УП1 091   instruction 091 - conditional jump to k if S = 0
+037 →   4      ЧтII 003   cell 003 - read through a second-rank address
+038     4        Зп 100   cell 100 - write the accumulator to the cell, a := S
+039     4        Чт 003   cell 003 - read the cell into the accumulator, S := a
+040     5        Чт 011   cell 011 - read the cell into the accumulator, S := a
+041     5        Зп 138   cell 138 - write the accumulator to the cell, a := S
+042     5        Чт 013   cell 013 - read the cell into the accumulator, S := a
+043     5        Зп 138   cell 138 - write the accumulator to the cell, a := S
+044     5        Чт 001   cell 001 - read the cell into the accumulator, S := a
+045     5        Зп 021   cell 021 - write the accumulator to the cell, a := S
+046     5        БП 091   instruction 091 - unconditional jump to k
+047     5        Чт 050   cell 050 - read the cell into the accumulator, S := a
+048     5        Зп 139   cell 139 - write the accumulator to the cell, a := S
+049     5        Чт 012   cell 012 - read the cell into the accumulator, S := a
+050     6        Зп 140   cell 140 - write the accumulator to the cell, a := S
+051     6        Чт 002   cell 002 - read the cell into the accumulator, S := a
+052     6        Зп 050   cell 050 - write the accumulator to the cell, a := S
+053     6        БП 123   instruction 123 - unconditional jump to k
+054     6      ЧтII 050   cell 050 - read through a second-rank address
+055     6        Зп 016   cell 016 - write the accumulator to the cell, a := S
+056     6        Сл 015   cell 015 - addition, S := S + a
+057     6        Зп 100   cell 100 - write the accumulator to the cell, a := S
+058     6        Чт 012   cell 012 - read the cell into the accumulator, S := a
+059     6        Зп 140   cell 140 - write the accumulator to the cell, a := S
+060     7        Чт 139   cell 139 - read the cell into the accumulator, S := a
+061     7        Зп 179   cell 179 - write the accumulator to the cell, a := S
+062     7        Чт 002   cell 002 - read the cell into the accumulator, S := a
+063     7        Зп 050   cell 050 - write the accumulator to the cell, a := S
+064     7        БП 123   instruction 123 - unconditional jump to k
+065     7      ЧтII 050   cell 050 - read through a second-rank address
+066     7        Зп 178   cell 178 - write the accumulator to the cell, a := S
+067     7      Выч1 100   cell 100 - subtraction, S := S - a
+068     7        Зп 051   cell 051 - write the accumulator to the cell, a := S
+069     7      БПII 138   cell 138 - jump through a second-rank address
+070     8       УП2 034   instruction 034 - conditional jump to k if S < 0
+071     8     sh/СчП 021   cell 021 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+072     8       УП1 006   instruction 006 - conditional jump to k if S = 0
+073     8        БП 037   instruction 037 - unconditional jump to k
+074     8      ЧтII 021   cell 021 - read through a second-rank address
+075     8       Ост 001   cell 001 - halt (or print the accumulator)
+076 →   8        БП 031   instruction 031 - unconditional jump to k
+077     8        Чт 000   cell 000 - read the cell into the accumulator, S := a
+078     8       Ост 001   cell 001 - halt (or print the accumulator)
+079     8      ЧтII 050   cell 050 - read through a second-rank address
+080     9       Ост 001   cell 001 - halt (or print the accumulator)
+081     9       Ост 000   cell 000 - halt (or print the accumulator)
+082     9        Чт 013   cell 013 - read the cell into the accumulator, S := a
+083     9        Зп 138   cell 138 - write the accumulator to the cell, a := S
+084     9        БП 004   instruction 004 - unconditional jump to k
+085 →   9      ЧтII 021   cell 021 - read through a second-rank address
+086     9       Ост 001   cell 001 - halt (or print the accumulator)
+087 →   9        Чт 016   cell 016 - read the cell into the accumulator, S := a
+088     9       Ост 001   cell 001 - halt (or print the accumulator)
+089     9        Чт 100   cell 100 - read the cell into the accumulator, S := a
+090    10       Ост 001   cell 001 - halt (or print the accumulator)
+091 →  10        Чт 178   cell 178 - read the cell into the accumulator, S := a
+092    10       Ост 001   cell 001 - halt (or print the accumulator)
+093    10      Выч1 015   cell 015 - subtraction, S := S - a
+094    10       Ост 001   cell 001 - halt (or print the accumulator)
+095    10        Чт 014   cell 014 - read the cell into the accumulator, S := a
+096    10        Зп 140   cell 140 - write the accumulator to the cell, a := S
+097    10        Чт 139   cell 139 - read the cell into the accumulator, S := a
+098    10        Зп 179   cell 179 - write the accumulator to the cell, a := S
+099    10        Чт 002   cell 002 - read the cell into the accumulator, S := a
+100    11        Зп 050   cell 050 - write the accumulator to the cell, a := S
+101    11        БП 123   instruction 123 - unconditional jump to k
+102    11      ЧтII 050   cell 050 - read through a second-rank address
+103    11      Выч1 100   cell 100 - subtraction, S := S - a
+104    11       Ост 001   cell 001 - halt (or print the accumulator)
+105    11        Чт 051   cell 051 - read the cell into the accumulator, S := a
+106    11       Ост 001   cell 001 - halt (or print the accumulator)
+107    11     sh/СчП 021   cell 021 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+108    11       УП1 006   instruction 006 - conditional jump to k if S = 0
+109    11       Ост 000   cell 000 - halt (or print the accumulator)
+110    12        Чт 000   cell 000 - read the cell into the accumulator, S := a
+111    12        Зп 051   cell 051 - write the accumulator to the cell, a := S
+112    12        Чт 002   cell 002 - read the cell into the accumulator, S := a
+113    12        Зп 021   cell 021 - write the accumulator to the cell, a := S
+114    12        Чт 002   cell 002 - read the cell into the accumulator, S := a
+115    12        Зп 050   cell 050 - write the accumulator to the cell, a := S
+116    12        Чт 051   cell 051 - read the cell into the accumulator, S := a
+117    12        Сл 086   cell 086 - addition, S := S + a
+118    12        Зп 051   cell 051 - write the accumulator to the cell, a := S
+119    12       Ост 001   cell 001 - halt (or print the accumulator)
+120    13      ЧтII 021   cell 021 - read through a second-rank address
+121    13       Ост 001   cell 001 - halt (or print the accumulator)
+122    13      ЧтII 050   cell 050 - read through a second-rank address
+123 →  13       Ост 001   cell 001 - halt (or print the accumulator)
+124    13     sh/СчП 050   cell 050 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+125    13     sh/СчП 021   cell 021 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+126    13       УП1 076   instruction 076 - conditional jump to k if S = 0
+127    13       Ост 000   cell 000 - halt (or print the accumulator)
+128    13        БП 087   instruction 087 - unconditional jump to k
+129    13         ? 000   cell 000 - no entry in table 5

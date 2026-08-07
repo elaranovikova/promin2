@@ -1,0 +1,67 @@
+# Прочее
+
+6 cards, 59 instructions, 1 empty slots
+7 direct jumps, 2 of them inside the deck (28.6 %), 1 backwards (loops); 0 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1         ? 000   cell 000 - no entry in table 5
+001     1         ? 000   cell 000 - no entry in table 5
+002     1         ? 000   cell 000 - no entry in table 5
+003     1         ? 000   cell 000 - no entry in table 5
+004     1         ? 000   cell 000 - no entry in table 5
+005     1         ? 000   cell 000 - no entry in table 5
+006     1         ? 000   cell 000 - no entry in table 5
+007     1         ? 000   cell 000 - no entry in table 5
+008     1         ? 000   cell 000 - no entry in table 5
+009     1         ? 000   cell 000 - no entry in table 5
+010     2        Сл 052   cell 052 - addition, S := S + a
+011     2        Зп 052   cell 052 - write the accumulator to the cell, a := S
+012     2        Чт 001   cell 001 - read the cell into the accumulator, S := a
+013     2        Сл 053   cell 053 - addition, S := S + a
+014 →   2        Зп 001   cell 001 - write the accumulator to the cell, a := S
+015     2      Выч1 079   cell 079 - subtraction, S := S - a
+016     2       УП1 020   instruction 020 - conditional jump to k if S = 0
+017     2        Чт 052   cell 052 - read the cell into the accumulator, S := a
+018     2       Ост 001   cell 001 - halt (or print the accumulator)
+019     2        БП 159   instruction 159 - unconditional jump to k
+020 →   3        БП 124   instruction 124 - unconditional jump to k
+021     3        Чт 170   cell 170 - read the cell into the accumulator, S := a
+022     3        Зп 172   cell 172 - write the accumulator to the cell, a := S
+023     3        БП 130   instruction 130 - unconditional jump to k
+024     3        Чт 105   cell 105 - read the cell into the accumulator, S := a
+025     3       УП1 127   instruction 127 - conditional jump to k if S = 0
+026     3        БП 129   instruction 129 - unconditional jump to k
+027     3        Чт 170   cell 170 - read the cell into the accumulator, S := a
+028     3        Зп 173   cell 173 - write the accumulator to the cell, a := S
+029     3       Ост 000   cell 000 - halt (or print the accumulator)
+030     4        Чт 048   cell 048 - read the cell into the accumulator, S := a
+031     4       Умн 049   cell 049 - multiplication, S := S * a
+032     4        ln 000   cell 000 - S := ln S
+033     4        Зп 051   cell 051 - write the accumulator to the cell, a := S
+034     4        Чт 053   cell 053 - read the cell into the accumulator, S := a
+035     4        Зп 004   cell 004 - write the accumulator to the cell, a := S
+036     4        Зп 005   cell 005 - write the accumulator to the cell, a := S
+037     4        Чт 004   cell 004 - read the cell into the accumulator, S := a
+038     4      Выч1 086   cell 086 - subtraction, S := S - a
+039     4       УП2 014   instruction 014 - conditional jump to k if S < 0
+040     5        Зп 036   cell 036 - write the accumulator to the cell, a := S
+041     5        Чт 018   cell 018 - read the cell into the accumulator, S := a
+042     5       Дел 027   cell 027 - division, S := S / a
+043     5       Ост 001   cell 001 - halt (or print the accumulator)
+044     5        Зп 037   cell 037 - write the accumulator to the cell, a := S
+045     5       Умн 018   cell 018 - multiplication, S := S * a
+046     5      Выч2 032   cell 032 - reverse subtraction, S := a - S
+047     5       Дел 038   cell 038 - division, S := S / a
+048     5       Ост 000   cell 000 - halt (or print the accumulator)
+049     5     ---
+050     6        Чт 001   cell 001 - read the cell into the accumulator, S := a
+051     6        Зп 009   cell 009 - write the accumulator to the cell, a := S
+052     6        Чт 009   cell 009 - read the cell into the accumulator, S := a
+053     6       Ост 001   cell 001 - halt (or print the accumulator)
+054     6       Умн 002   cell 002 - multiplication, S := S * a
+055     6       Ост 001   cell 001 - halt (or print the accumulator)
+056     6        Чт 009   cell 009 - read the cell into the accumulator, S := a
+057     6        Сл 088   cell 088 - addition, S := S + a
+058     6        Зп 009   cell 009 - write the accumulator to the cell, a := S
+059     6      Выч1 007   cell 007 - subtraction, S := S - a

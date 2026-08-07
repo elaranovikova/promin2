@@ -1,0 +1,97 @@
+# о.ч.х.с.в._(10)
+
+9 cards, 90 instructions, 0 empty slots
+2 direct jumps, 2 of them inside the deck (100.0 %), 2 backwards (loops); 0 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        Чт 032   cell 032 - read the cell into the accumulator, S := a
+001     1        Сл 018   cell 018 - addition, S := S + a
+002     1        Зп 018   cell 018 - write the accumulator to the cell, a := S
+003     1        Чт 032   cell 032 - read the cell into the accumulator, S := a
+004     1       Умн 032   cell 032 - multiplication, S := S * a
+005     1        Зп 022   cell 022 - write the accumulator to the cell, a := S
+006 →   1        Сл 033   cell 033 - addition, S := S + a
+007 →   1        Зп 033   cell 033 - write the accumulator to the cell, a := S
+008     1        Чт 022   cell 022 - read the cell into the accumulator, S := a
+009     1       Умн 032   cell 032 - multiplication, S := S * a
+010     2        Сл 023   cell 023 - addition, S := S + a
+011     2        Зп 023   cell 023 - write the accumulator to the cell, a := S
+012     2        Чт 022   cell 022 - read the cell into the accumulator, S := a
+013     2       Умн 022   cell 022 - multiplication, S := S * a
+014     2        Сл 026   cell 026 - addition, S := S + a
+015     2        Зп 026   cell 026 - write the accumulator to the cell, a := S
+016     2        Чт 090   cell 090 - read the cell into the accumulator, S := a
+017     2       Слф 031   cell 031 - fixed-point addition
+018     2        БП 007   instruction 007 - unconditional jump to k
+019     2       Ост 000   cell 000 - halt (or print the accumulator)
+020     3        БП 006   instruction 006 - unconditional jump to k
+021     3        Чт 027   cell 027 - read the cell into the accumulator, S := a
+022     3      Выч1 086   cell 086 - subtraction, S := S - a
+023     3        Зп 036   cell 036 - write the accumulator to the cell, a := S
+024     3        Чт 018   cell 018 - read the cell into the accumulator, S := a
+025     3       Дел 027   cell 027 - division, S := S / a
+026     3       Ост 001   cell 001 - halt (or print the accumulator)
+027     3        Зп 037   cell 037 - write the accumulator to the cell, a := S
+028     3       Умн 018   cell 018 - multiplication, S := S * a
+029     3      Выч2 033   cell 033 - reverse subtraction, S := a - S
+030     4       Дел 036   cell 036 - division, S := S / a
+031     4       Ост 001   cell 001 - halt (or print the accumulator)
+032     4        Зп 038   cell 038 - write the accumulator to the cell, a := S
+033     4         √ 000   cell 000 - S := square root of S
+034     4       Ост 001   cell 001 - halt (or print the accumulator)
+035     4        Зп 041   cell 041 - write the accumulator to the cell, a := S
+036     4        Чт 037   cell 037 - read the cell into the accumulator, S := a
+037     4       Умн 087   cell 087 - multiplication, S := S * a
+038     4        Сл 037   cell 037 - addition, S := S + a
+039     4       Умн 038   cell 038 - multiplication, S := S * a
+040     5        Зп 042   cell 042 - write the accumulator to the cell, a := S
+041     5        Чт 037   cell 037 - read the cell into the accumulator, S := a
+042     5       Умн 037   cell 037 - multiplication, S := S * a
+043     5       Умн 018   cell 018 - multiplication, S := S * a
+044     5      Выч2 023   cell 023 - reverse subtraction, S := a - S
+045     5       Дел 036   cell 036 - division, S := S / a
+046     5      Выч1 042   cell 042 - subtraction, S := S - a
+047     5       Ост 001   cell 001 - halt (or print the accumulator)
+048     5       Дел 038   cell 038 - division, S := S / a
+049     5       Дел 041   cell 041 - division, S := S / a
+050     6       Ост 001   cell 001 - halt (or print the accumulator)
+051     6        Чт 037   cell 037 - read the cell into the accumulator, S := a
+052     6       Умн 087   cell 087 - multiplication, S := S * a
+053     6        Сл 037   cell 037 - addition, S := S + a
+054     6       Умн 018   cell 018 - multiplication, S := S * a
+055     6        Зп 042   cell 042 - write the accumulator to the cell, a := S
+056     6        Чт 033   cell 033 - read the cell into the accumulator, S := a
+057     6       Умн 091   cell 091 - multiplication, S := S * a
+058     6      Выч1 042   cell 042 - subtraction, S := S - a
+059     6       Умн 037   cell 037 - multiplication, S := S * a
+060     7        Зп 042   cell 042 - write the accumulator to the cell, a := S
+061     7        Чт 023   cell 023 - read the cell into the accumulator, S := a
+062     7       Умн 087   cell 087 - multiplication, S := S * a
+063     7      Выч2 042   cell 042 - reverse subtraction, S := a - S
+064     7       Умн 037   cell 037 - multiplication, S := S * a
+065     7        Сл 026   cell 026 - addition, S := S + a
+066     7       Дел 036   cell 036 - division, S := S / a
+067     7       Ост 001   cell 001 - halt (or print the accumulator)
+068     7       Дел 038   cell 038 - division, S := S / a
+069     7       Умн 017   cell 017 - multiplication, S := S * a
+070     8      Выч1 087   cell 087 - subtraction, S := S - a
+071     8      Выч1 086   cell 086 - subtraction, S := S - a
+072     8       Ост 001   cell 001 - halt (or print the accumulator)
+073     8        Чт 027   cell 027 - read the cell into the accumulator, S := a
+074     8         √ 000   cell 000 - S := square root of S
+075     8        Зп 101   cell 101 - write the accumulator to the cell, a := S
+076     8        Чт 041   cell 041 - read the cell into the accumulator, S := a
+077     8       Дел 101   cell 101 - division, S := S / a
+078     8       Ост 001   cell 001 - halt (or print the accumulator)
+079     8       Ост 000   cell 000 - halt (or print the accumulator)
+080     9        Фр 031   cell 031 - sign transfer, S := |S| * sign a
+081     9         √ 030   cell 030 - S := square root of S
+082     9      acos 081   cell 081 - S := arccos S
+083     9         √ 032   cell 032 - S := square root of S
+084     9       Дел 042   cell 042 - division, S := S / a
+085     9      Выч2 009   cell 009 - reverse subtraction, S := a - S
+086     9         ? 007   cell 007 - no entry in table 5
+087     9        Фр 032   cell 032 - sign transfer, S := |S| * sign a
+088     9      Выч1 009   cell 009 - subtraction, S := S - a
+089     9        th 031   cell 031 - S := th S

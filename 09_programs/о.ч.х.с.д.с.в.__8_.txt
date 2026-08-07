@@ -1,0 +1,57 @@
+# о.ч.х.с.д.с.в._(8)
+
+5 cards, 50 instructions, 0 empty slots
+3 direct jumps, 3 of them inside the deck (100.0 %), 3 backwards (loops); 0 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        Чт 000   cell 000 - read the cell into the accumulator, S := a
+001     1        Зп 018   cell 018 - write the accumulator to the cell, a := S
+002     1        Зп 032   cell 032 - write the accumulator to the cell, a := S
+003     1        Зп 023   cell 023 - write the accumulator to the cell, a := S
+004     1        Зп 026   cell 026 - write the accumulator to the cell, a := S
+005     1        Зп 033   cell 033 - write the accumulator to the cell, a := S
+006     1        Зп 027   cell 027 - write the accumulator to the cell, a := S
+007 →   1        Чт 090   cell 090 - read the cell into the accumulator, S := a
+008 →   1        Зп 028   cell 028 - write the accumulator to the cell, a := S
+009     1       Слф 081   cell 081 - fixed-point addition
+010     2        Чт 086   cell 086 - read the cell into the accumulator, S := a
+011     2        Сл 027   cell 027 - addition, S := S + a
+012     2        Зп 027   cell 027 - write the accumulator to the cell, a := S
+013     2        Чт 090   cell 090 - read the cell into the accumulator, S := a
+014     2       Слф 028   cell 028 - fixed-point addition
+015     2        БП 008   instruction 008 - unconditional jump to k
+016     2       Ост 000   cell 000 - halt (or print the accumulator)
+017     2        БП 007   instruction 007 - unconditional jump to k
+018     2        Чт 027   cell 027 - read the cell into the accumulator, S := a
+019     2      Выч1 086   cell 086 - subtraction, S := S - a
+020     3        Зп 036   cell 036 - write the accumulator to the cell, a := S
+021     3        Чт 018   cell 018 - read the cell into the accumulator, S := a
+022     3       Дел 027   cell 027 - division, S := S / a
+023     3       Ост 001   cell 001 - halt (or print the accumulator)
+024     3        Зп 037   cell 037 - write the accumulator to the cell, a := S
+025     3       Умн 018   cell 018 - multiplication, S := S * a
+026     3      Выч2 032   cell 032 - reverse subtraction, S := a - S
+027     3       Дел 036   cell 036 - division, S := S / a
+028     3       Ост 001   cell 001 - halt (or print the accumulator)
+029     3         √ 000   cell 000 - S := square root of S
+030     4     sh/СчП 081   cell 081 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+031 →   4         √ 022   cell 022 - S := square root of S
+032     4      acos 002   cell 002 - S := arccos S
+033     4         ? 009   cell 009 - no entry in table 5
+034     4        ln 002   cell 002 - S := ln S
+035     4        Фр 024   cell 024 - sign transfer, S := |S| * sign a
+036     4         ? 092   cell 092 - no entry in table 5
+037     4         √ 022   cell 022 - S := square root of S
+038     4         √ 020   cell 020 - S := square root of S
+039     4     sh/СчП 082   cell 082 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+040     5         ? 007   cell 007 - no entry in table 5
+041     5      Выч2 009   cell 009 - reverse subtraction, S := a - S
+042     5        th 031   cell 031 - S := th S
+043     5       УП1 031   instruction 031 - conditional jump to k if S = 0
+044     5        Фр 011   cell 011 - sign transfer, S := |S| * sign a
+045     5         √ 032   cell 032 - S := square root of S
+046     5      Выч2 009   cell 009 - reverse subtraction, S := a - S
+047     5         √ 021   cell 021 - S := square root of S
+048     5        Фр 012   cell 012 - sign transfer, S := |S| * sign a
+049     5        th 032   cell 032 - S := th S

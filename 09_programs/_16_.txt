@@ -1,0 +1,47 @@
+# (16)
+
+4 cards, 40 instructions, 0 empty slots
+3 direct jumps, 2 of them inside the deck (66.7 %), 1 backwards (loops); 0 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1       Умн 004   cell 004 - multiplication, S := S * a
+001     1        Зп 017   cell 017 - write the accumulator to the cell, a := S
+002     1        Чт 011   cell 011 - read the cell into the accumulator, S := a
+003     1      Выч1 087   cell 087 - subtraction, S := S - a
+004     1        Зп 018   cell 018 - write the accumulator to the cell, a := S
+005     1        Чт 006   cell 006 - read the cell into the accumulator, S := a
+006     1        ln 000   cell 000 - S := ln S
+007     1       Умн 018   cell 018 - multiplication, S := S * a
+008 →   1       exp 000   cell 000 - S := e to the power of S
+009     1       Умн 017   cell 017 - multiplication, S := S * a
+010     2       Дел 014   cell 014 - division, S := S / a
+011     2        Сл 019   cell 019 - addition, S := S + a
+012     2        Зп 019   cell 019 - write the accumulator to the cell, a := S
+013     2        Чт 011   cell 011 - read the cell into the accumulator, S := a
+014     2      Выч1 086   cell 086 - subtraction, S := S - a
+015     2        Зп 011   cell 011 - write the accumulator to the cell, a := S
+016     2      Выч1 086   cell 086 - subtraction, S := S - a
+017     2       УП1 059   instruction 059 - conditional jump to k if S = 0
+018     2        БП 032   instruction 032 - unconditional jump to k
+019     2        Чт 019   cell 019 - read the cell into the accumulator, S := a
+020     3       exp 000   cell 000 - S := e to the power of S
+021     3        Зп 049   cell 049 - write the accumulator to the cell, a := S
+022     3        Чт 024   cell 024 - read the cell into the accumulator, S := a
+023     3        ln 000   cell 000 - S := ln S
+024     3       Умн 048   cell 048 - multiplication, S := S * a
+025     3       exp 000   cell 000 - S := e to the power of S
+026     3       Умн 023   cell 023 - multiplication, S := S * a
+027     3       Дел 049   cell 049 - division, S := S / a
+028     3       Умн 019   cell 019 - multiplication, S := S * a
+029     3       Умн 199   cell 199 - multiplication, S := S * a
+030     4       Умн 055   cell 055 - multiplication, S := S * a
+031     4        Сл 054   cell 054 - addition, S := S + a
+032 →   4        Сл 043   cell 043 - addition, S := S + a
+033     4        Сл 002   cell 002 - addition, S := S + a
+034     4        Зп 056   cell 056 - write the accumulator to the cell, a := S
+035     4       Ост 001   cell 001 - halt (or print the accumulator)
+036     4     sh/СчП 003   cell 003 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+037     4     sh/СчП 026   cell 026 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+038     4       УП1 008   instruction 008 - conditional jump to k if S = 0
+039     4       Ост 000   cell 000 - halt (or print the accumulator)

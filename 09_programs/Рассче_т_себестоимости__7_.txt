@@ -1,0 +1,47 @@
+# Рассчёт_себестоимости_(7)
+
+4 cards, 40 instructions, 0 empty slots
+2 direct jumps, 1 of them inside the deck (50.0 %), 0 backwards (loops); 6 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        Зп 036   cell 036 - write the accumulator to the cell, a := S
+001     1     sh/СчП 030   cell 030 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+002     1       УП1 033   instruction 033 - conditional jump to k if S = 0
+003     1        Чт 036   cell 036 - read the cell into the accumulator, S := a
+004     1        Зп 005   cell 005 - write the accumulator to the cell, a := S
+005     1       Ост 001   cell 001 - halt (or print the accumulator)
+006     1        Чт 020   cell 020 - read the cell into the accumulator, S := a
+007     1        Зп 030   cell 030 - write the accumulator to the cell, a := S
+008     1        Чт 010   cell 010 - read the cell into the accumulator, S := a
+009     1        Зп 033   cell 033 - write the accumulator to the cell, a := S
+010     2      ЧтII 030   cell 030 - read through a second-rank address
+011     2        Зп 037   cell 037 - write the accumulator to the cell, a := S
+012     2      ЧтII 033   cell 033 - read through a second-rank address
+013     2       Дел 037   cell 037 - division, S := S / a
+014     2        Сл 038   cell 038 - addition, S := S + a
+015     2        Зп 038   cell 038 - write the accumulator to the cell, a := S
+016     2     sh/СчП 030   cell 030 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+017     2     sh/СчП 033   cell 033 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+018     2       УП1 050   instruction 050 - conditional jump to k if S = 0
+019     2        Чт 038   cell 038 - read the cell into the accumulator, S := a
+020     3      ЧтII 032   cell 032 - read through a second-rank address
+021     3         ? 012   cell 012 - no entry in table 5
+022     3         ? 032   cell 032 - no entry in table 5
+023     3         ? 022   cell 022 - no entry in table 5
+024     3      Выч2 009   cell 009 - reverse subtraction, S := a - S
+025     3       cos 002   cell 002 - S := cos S
+026     3     sh/СчП 032   cell 032 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+027     3      ЧтII 032   cell 032 - read through a second-rank address
+028     3         ? 036   cell 036 - no entry in table 5
+029     3     sh/СчП 032   cell 032 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+030     4        ln 032   cell 032 - S := ln S
+031     4         ? 052   cell 052 - no entry in table 5
+032     4      ЧтII 036   cell 036 - read through a second-rank address
+033 →   4         ? 036   cell 036 - no entry in table 5
+034     4        ln 032   cell 032 - S := ln S
+035     4        ln 030   cell 030 - S := ln S
+036     4      acos 031   cell 031 - S := arccos S
+037     4      ЧтII 033   cell 033 - read through a second-rank address
+038     4      acos 032   cell 032 - S := arccos S
+039     4         ? 033   cell 033 - no entry in table 5

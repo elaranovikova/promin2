@@ -1,0 +1,37 @@
+# Вариант
+
+3 cards, 23 instructions, 7 empty slots
+2 direct jumps, 2 of them inside the deck (100.0 %), 2 backwards (loops); 0 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        Чт 025   cell 025 - read the cell into the accumulator, S := a
+001     1        Зп 006   cell 006 - write the accumulator to the cell, a := S
+002     1        Чт 026   cell 026 - read the cell into the accumulator, S := a
+003     1        Зп 007   cell 007 - write the accumulator to the cell, a := S
+004 →   1        Чт 027   cell 027 - read the cell into the accumulator, S := a
+005     1        Зп 008   cell 008 - write the accumulator to the cell, a := S
+006     1        Чт 022   cell 022 - read the cell into the accumulator, S := a
+007     1        Зп 009   cell 009 - write the accumulator to the cell, a := S
+008     1        Чт 023   cell 023 - read the cell into the accumulator, S := a
+009 →   1        Зп 010   cell 010 - write the accumulator to the cell, a := S
+010     2        Чт 024   cell 024 - read the cell into the accumulator, S := a
+011     2        Зп 011   cell 011 - write the accumulator to the cell, a := S
+012     2        Чт 003   cell 003 - read the cell into the accumulator, S := a
+013     2      Вычф 070   cell 070 - fixed-point subtraction
+014     2        Зп 001   cell 001 - write the accumulator to the cell, a := S
+015     2        Чт 004   cell 004 - read the cell into the accumulator, S := a
+016     2      Вычф 070   cell 070 - fixed-point subtraction
+017     2        Зп 002   cell 002 - write the accumulator to the cell, a := S
+018     2        БП 004   instruction 004 - unconditional jump to k
+019     2     ---
+020     3        Зп 007   cell 007 - write the accumulator to the cell, a := S
+021     3        Чт 033   cell 033 - read the cell into the accumulator, S := a
+022     3        Зп 008   cell 008 - write the accumulator to the cell, a := S
+023     3        БП 009   instruction 009 - unconditional jump to k
+024     3     ---
+025     3     ---
+026     3     ---
+027     3     ---
+028     3     ---
+029     3     ---

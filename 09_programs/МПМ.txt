@@ -1,0 +1,47 @@
+# МПМ
+
+4 cards, 32 instructions, 8 empty slots
+5 direct jumps, 4 of them inside the deck (80.0 %), 4 backwards (loops); 1 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000 →   1        Зп 071   cell 071 - write the accumulator to the cell, a := S
+001     1       Слф 090   cell 090 - fixed-point addition
+002     1        Зп 013   cell 013 - write the accumulator to the cell, a := S
+003     1       Слф 013   cell 013 - fixed-point addition
+004     1        Зп 075   cell 075 - write the accumulator to the cell, a := S
+005     1       Слф 075   cell 075 - fixed-point addition
+006     1       Слф 075   cell 075 - fixed-point addition
+007     1        Зп 076   cell 076 - write the accumulator to the cell, a := S
+008     1         ? 199   cell 199 - no entry in table 5
+009     1        Чт 000   cell 000 - read the cell into the accumulator, S := a
+010     2        Зп 078   cell 078 - write the accumulator to the cell, a := S
+011     2        Чт 078   cell 078 - read the cell into the accumulator, S := a
+012     2      ЧтII 018   cell 018 - read through a second-rank address
+013     2        Зп 078   cell 078 - write the accumulator to the cell, a := S
+014     2         ? 001   cell 001 - no entry in table 5
+015     2     sh/СчП 018   cell 018 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+016     2       УП1 051   instruction 051 - conditional jump to k if S = 0
+017     2        Чт 019   cell 019 - read the cell into the accumulator, S := a
+018     2        Зп 018   cell 018 - write the accumulator to the cell, a := S
+019     2        Чт 078   cell 078 - read the cell into the accumulator, S := a
+020     3      Выч1 016   cell 016 - subtraction, S := S - a
+021     3       УП2 000   instruction 000 - conditional jump to k if S < 0
+022     3        Чт 078   cell 078 - read the cell into the accumulator, S := a
+023     3       Ост 099   cell 099 - halt (or print the accumulator)
+024     3        Зп 016   cell 016 - write the accumulator to the cell, a := S
+025     3        БП 000   instruction 000 - unconditional jump to k
+026     3     ---
+027     3     ---
+028     3     ---
+029     3     ---
+030     4      Выч1 016   cell 016 - subtraction, S := S - a
+031     4       УП2 000   instruction 000 - conditional jump to k if S < 0
+032     4        Чт 078   cell 078 - read the cell into the accumulator, S := a
+033     4       Ост 099   cell 099 - halt (or print the accumulator)
+034     4        Зп 016   cell 016 - write the accumulator to the cell, a := S
+035     4        БП 000   instruction 000 - unconditional jump to k
+036     4     ---
+037     4     ---
+038     4     ---
+039     4     ---

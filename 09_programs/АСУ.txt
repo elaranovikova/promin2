@@ -1,0 +1,87 @@
+# АСУ
+
+8 cards, 20 instructions, 60 empty slots
+8 direct jumps, 8 of them inside the deck (100.0 %), 0 backwards (loops); 0 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1     ---
+001     1     ---
+002     1        БП 043   instruction 043 - unconditional jump to k
+003     1        Чт 002   cell 002 - read the cell into the accumulator, S := a
+004     1       Ост 001   cell 001 - halt (or print the accumulator)
+005     1        БП 047   instruction 047 - unconditional jump to k
+006     1     ---
+007     1     ---
+008     1     ---
+009     1     ---
+010     2     ---
+011     2     ---
+012     2     ---
+013     2        Чт 001   cell 001 - read the cell into the accumulator, S := a
+014     2       Ост 001   cell 001 - halt (or print the accumulator)
+015     2     ---
+016     2     ---
+017     2     ---
+018     2     ---
+019     2     ---
+020     3     ---
+021     3     ---
+022     3     ---
+023     3     ---
+024     3        БП 044   instruction 044 - unconditional jump to k
+025     3     ---
+026     3        БП 045   instruction 045 - unconditional jump to k
+027     3     ---
+028     3     ---
+029     3     ---
+030     4     ---
+031     4     ---
+032     4     ---
+033     4     ---
+034     4        БП 055   instruction 055 - unconditional jump to k
+035     4        БП 058   instruction 058 - unconditional jump to k
+036     4     ---
+037     4     ---
+038     4     ---
+039     4     ---
+040     5     ---
+041     5     ---
+042     5     ---
+043 →   5     ---
+044 →   5     ---
+045 →   5        Чт 003   cell 003 - read the cell into the accumulator, S := a
+046     5       Ост 002   cell 002 - halt (or print the accumulator)
+047 →   5        БП 058   instruction 058 - unconditional jump to k
+048     5        БП 060   instruction 060 - unconditional jump to k
+049     5     ---
+050     6     ---
+051     6     ---
+052     6     ---
+053     6     ---
+054     6     ---
+055 →   6     ---
+056     6     ---
+057     6     ---
+058 →   6        Чт 004   cell 004 - read the cell into the accumulator, S := a
+059     6       Ост 001   cell 001 - halt (or print the accumulator)
+060 →   7        Чт 005   cell 005 - read the cell into the accumulator, S := a
+061     7       Ост 001   cell 001 - halt (or print the accumulator)
+062     7     ---
+063     7     ---
+064     7     ---
+065     7     ---
+066     7     ---
+067     7     ---
+068     7     ---
+069     7     ---
+070     8     ---
+071     8     ---
+072     8     ---
+073     8     ---
+074     8     ---
+075     8     ---
+076     8        Чт 006   cell 006 - read the cell into the accumulator, S := a
+077     8       Ост 001   cell 001 - halt (or print the accumulator)
+078     8     ---
+079     8     ---

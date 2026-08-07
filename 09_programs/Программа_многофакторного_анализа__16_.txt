@@ -1,0 +1,157 @@
+# Программа_многофакторного_анализа_(16)
+
+15 cards, 150 instructions, 0 empty slots
+2 direct jumps, 2 of them inside the deck (100.0 %), 2 backwards (loops); 16 indirect accesses (ЧтII/ЗпII/БПII)
+
+No   Card   Instruction   Meaning
+------------------------------------------------------------------------
+000     1        Чт 000   cell 000 - read the cell into the accumulator, S := a
+001     1        Зп 003   cell 003 - write the accumulator to the cell, a := S
+002     1        Зп 002   cell 002 - write the accumulator to the cell, a := S
+003     1        Зп 005   cell 005 - write the accumulator to the cell, a := S
+004     1        Зп 004   cell 004 - write the accumulator to the cell, a := S
+005     1        Зп 007   cell 007 - write the accumulator to the cell, a := S
+006     1        Зп 013   cell 013 - write the accumulator to the cell, a := S
+007     1        Зп 019   cell 019 - write the accumulator to the cell, a := S
+008     1        Зп 010   cell 010 - write the accumulator to the cell, a := S
+009     1        Зп 015   cell 015 - write the accumulator to the cell, a := S
+010     2        Зп 020   cell 020 - write the accumulator to the cell, a := S
+011     2        Зп 008   cell 008 - write the accumulator to the cell, a := S
+012     2        Зп 009   cell 009 - write the accumulator to the cell, a := S
+013     2        Зп 014   cell 014 - write the accumulator to the cell, a := S
+014     2        Зп 041   cell 041 - write the accumulator to the cell, a := S
+015     2        Зп 050   cell 050 - write the accumulator to the cell, a := S
+016     2        Чт 025   cell 025 - read the cell into the accumulator, S := a
+017     2        Зп 044   cell 044 - write the accumulator to the cell, a := S
+018     2        Чт 026   cell 026 - read the cell into the accumulator, S := a
+019     2        Зп 045   cell 045 - write the accumulator to the cell, a := S
+020     3        Чт 027   cell 027 - read the cell into the accumulator, S := a
+021     3        Зп 046   cell 046 - write the accumulator to the cell, a := S
+022     3        Чт 028   cell 028 - read the cell into the accumulator, S := a
+023     3        Зп 047   cell 047 - write the accumulator to the cell, a := S
+024     3        Чт 090   cell 090 - read the cell into the accumulator, S := a
+025     3        Зп 071   cell 071 - write the accumulator to the cell, a := S
+026 →   3      ЧтII 044   cell 044 - read through a second-rank address
+027     3        Сл 005   cell 005 - addition, S := S + a
+028     3        Зп 005   cell 005 - write the accumulator to the cell, a := S
+029     3      ЧтII 045   cell 045 - read through a second-rank address
+030     4       sin 012   cell 012 - S := sin S
+031     4         ? 012   cell 012 - no entry in table 5
+032     4       Ост 012   cell 012 - halt (or print the accumulator)
+033     4      ЧтII 012   cell 012 - read through a second-rank address
+034     4      acos 002   cell 002 - S := arccos S
+035     4      Вычф 002   cell 002 - fixed-point subtraction
+036     4       sin 002   cell 002 - S := sin S
+037     4        Зп 002   cell 002 - write the accumulator to the cell, a := S
+038     4      ЧтII 002   cell 002 - read through a second-rank address
+039     4         ? 002   cell 002 - no entry in table 5
+040     5         ? 009   cell 009 - no entry in table 5
+041     5      Выч2 009   cell 009 - reverse subtraction, S := a - S
+042     5      Вычф 022   cell 022 - fixed-point subtraction
+043     5      Выч2 009   cell 009 - reverse subtraction, S := a - S
+044     5      ЧтII 022   cell 022 - read through a second-rank address
+045     5      Выч2 009   cell 009 - reverse subtraction, S := a - S
+046     5        Чт 022   cell 022 - read the cell into the accumulator, S := a
+047     5      Выч2 009   cell 009 - reverse subtraction, S := a - S
+048     5      Выч2 022   cell 022 - reverse subtraction, S := a - S
+049     5      Выч2 009   cell 009 - reverse subtraction, S := a - S
+050     6        Сл 002   cell 002 - addition, S := S + a
+051     6        Зп 002   cell 002 - write the accumulator to the cell, a := S
+052     6        Зп 006   cell 006 - write the accumulator to the cell, a := S
+053     6      ЧтII 046   cell 046 - read through a second-rank address
+054     6        Сл 003   cell 003 - addition, S := S + a
+055     6        Зп 003   cell 003 - write the accumulator to the cell, a := S
+056     6        Зп 011   cell 011 - write the accumulator to the cell, a := S
+057     6      ЧтII 047   cell 047 - read through a second-rank address
+058     6        Сл 004   cell 004 - addition, S := S + a
+059     6        Зп 004   cell 004 - write the accumulator to the cell, a := S
+060     7        Зп 016   cell 016 - write the accumulator to the cell, a := S
+061     7      ЧтII 045   cell 045 - read through a second-rank address
+062     7        Зп 036   cell 036 - write the accumulator to the cell, a := S
+063     7       Умн 036   cell 036 - multiplication, S := S * a
+064     7        Сл 007   cell 007 - addition, S := S + a
+065     7        Зп 007   cell 007 - write the accumulator to the cell, a := S
+066     7      ЧтII 046   cell 046 - read through a second-rank address
+067     7        Зп 037   cell 037 - write the accumulator to the cell, a := S
+068     7       Умн 037   cell 037 - multiplication, S := S * a
+069     7        Сл 013   cell 013 - addition, S := S + a
+070     8        Зп 013   cell 013 - write the accumulator to the cell, a := S
+071     8      ЧтII 047   cell 047 - read through a second-rank address
+072     8        Зп 038   cell 038 - write the accumulator to the cell, a := S
+073     8       Умн 038   cell 038 - multiplication, S := S * a
+074     8        Сл 019   cell 019 - addition, S := S + a
+075     8        Зп 019   cell 019 - write the accumulator to the cell, a := S
+076     8      ЧтII 044   cell 044 - read through a second-rank address
+077     8       Умн 036   cell 036 - multiplication, S := S * a
+078     8        Сл 010   cell 010 - addition, S := S + a
+079     8        Зп 010   cell 010 - write the accumulator to the cell, a := S
+080     9      ЧтII 044   cell 044 - read through a second-rank address
+081     9       Умн 037   cell 037 - multiplication, S := S * a
+082     9        Сл 015   cell 015 - addition, S := S + a
+083     9        Зп 015   cell 015 - write the accumulator to the cell, a := S
+084     9      ЧтII 044   cell 044 - read through a second-rank address
+085     9       Умн 038   cell 038 - multiplication, S := S * a
+086     9        Сл 020   cell 020 - addition, S := S + a
+087     9        Зп 020   cell 020 - write the accumulator to the cell, a := S
+088     9        Чт 036   cell 036 - read the cell into the accumulator, S := a
+089     9       Умн 037   cell 037 - multiplication, S := S * a
+090    10        Сл 008   cell 008 - addition, S := S + a
+091    10        Зп 008   cell 008 - write the accumulator to the cell, a := S
+092    10        Зп 012   cell 012 - write the accumulator to the cell, a := S
+093    10        Чт 036   cell 036 - read the cell into the accumulator, S := a
+094    10       Умн 038   cell 038 - multiplication, S := S * a
+095    10        Сл 009   cell 009 - addition, S := S + a
+096    10        Зп 009   cell 009 - write the accumulator to the cell, a := S
+097    10        Зп 017   cell 017 - write the accumulator to the cell, a := S
+098    10        Чт 037   cell 037 - read the cell into the accumulator, S := a
+099    10       Умн 038   cell 038 - multiplication, S := S * a
+100    11        Сл 014   cell 014 - addition, S := S + a
+101    11        Зп 014   cell 014 - write the accumulator to the cell, a := S
+102 →  11        Зп 018   cell 018 - write the accumulator to the cell, a := S
+103    11     sh/СчП 044   cell 044 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+104    11     sh/СчП 045   cell 045 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+105    11     sh/СчП 046   cell 046 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+106    11     sh/СчП 047   cell 047 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+107    11       УП1 026   instruction 026 - conditional jump to k if S = 0
+108    11        Чт 029   cell 029 - read the cell into the accumulator, S := a
+109    11        Зп 001   cell 001 - write the accumulator to the cell, a := S
+110    12        Чт 028   cell 028 - read the cell into the accumulator, S := a
+111    12        Зп 047   cell 047 - write the accumulator to the cell, a := S
+112    12      ЧтII 044   cell 044 - read through a second-rank address
+113    12      Выч1 039   cell 039 - subtraction, S := S - a
+114    12        Зп 040   cell 040 - write the accumulator to the cell, a := S
+115    12       Умн 040   cell 040 - multiplication, S := S * a
+116    12        Сл 041   cell 041 - addition, S := S + a
+117    12        Зп 041   cell 041 - write the accumulator to the cell, a := S
+118    12      ЧтII 045   cell 045 - read through a second-rank address
+119    12       Умн 022   cell 022 - multiplication, S := S * a
+120    13      ЧтII 044   cell 044 - read through a second-rank address
+121    13      Выч1 042   cell 042 - subtraction, S := S - a
+122    13        Зп 043   cell 043 - write the accumulator to the cell, a := S
+123    13       Умн 043   cell 043 - multiplication, S := S * a
+124    13        Сл 050   cell 050 - addition, S := S + a
+125    13        Зп 050   cell 050 - write the accumulator to the cell, a := S
+126    13     sh/СчП 044   cell 044 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+127    13     sh/СчП 045   cell 045 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+128    13     sh/СчП 046   cell 046 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+129    13     sh/СчП 047   cell 047 - table 5: sh - on the Промінь-2 probably СчП (readdressing and loop counting), see comment
+130    14       УП1 102   instruction 102 - conditional jump to k if S = 0
+131    14        Чт 041   cell 041 - read the cell into the accumulator, S := a
+132    14       Дел 029   cell 029 - division, S := S / a
+133    14         √ 000   cell 000 - S := square root of S
+134    14        Зп 051   cell 051 - write the accumulator to the cell, a := S
+135    14       Умн 051   cell 051 - multiplication, S := S * a
+136    14        Зп 051   cell 051 - write the accumulator to the cell, a := S
+137    14        Чт 050   cell 050 - read the cell into the accumulator, S := a
+138    14       Дел 029   cell 029 - division, S := S / a
+139    14         √ 000   cell 000 - S := square root of S
+140    15       Ост 001   cell 001 - halt (or print the accumulator)
+141    15        Чт 021   cell 021 - read the cell into the accumulator, S := a
+142    15       Ост 001   cell 001 - halt (or print the accumulator)
+143    15        Чт 022   cell 022 - read the cell into the accumulator, S := a
+144    15       Ост 001   cell 001 - halt (or print the accumulator)
+145    15        Чт 023   cell 023 - read the cell into the accumulator, S := a
+146    15       Ост 001   cell 001 - halt (or print the accumulator)
+147    15        Чт 024   cell 024 - read the cell into the accumulator, S := a
+148    15       Ост 001   cell 001 - halt (or print the accumulator)
+149    15       Ост 000   cell 000 - halt (or print the accumulator)
