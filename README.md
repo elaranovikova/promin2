@@ -60,7 +60,15 @@ column 3   metal on 1                ->  1  = units digit
 
 Which is the first instruction of the deck `!_полная_АУ`, the arithmetic unit
 test: read cell 051. The remaining nine groups of this one card give the rest
-of the opening sequence quoted in handoff v3.
+of the opening sequence quoted in handoff v3. All ten of them, in order:
+
+<img src="04_extraction/05_reading_a_card.gif" width="100%" alt="Animation reading card 1 of the АУ deck group by group. For each group of three columns the animation shows a zoom on the card, which weights are metal and which are punched away, the three sums, the resulting instruction and the instruction band filling up from Чт 051 to Зп 001.">
+
+Watch group 6. Almost nothing is punched there, so almost every weight still
+stands: 16+8+4+2+1 = 31 in the operation column and 9 and 9 in the address,
+which is `Ост 099`. That is the error halt this test deck stops at when a
+check fails, and all 27 halts across the three АУ stacks carry exactly that
+address.
 
 ## Where the project stands
 
@@ -99,7 +107,7 @@ from the one slanted museum photograph and disappeared with the flat scans.
 | | |
 |---|---|
 | `01_handoff/` | three handoff documents; **v3 is the authoritative one** |
-| `04_extraction/` | `00`–`03` results from the single photograph: rectified plate, 64 detected holes annotated, hole coordinates as CSV. `04` one control image from the flat-scan pipeline, the one shown above |
+| `04_extraction/` | `00`–`03` results from the single photograph: rectified plate, 64 detected holes annotated, hole coordinates as CSV. `04` a control image from the flat-scan pipeline and `05` the animation above, both built from card 1 of the АУ deck |
 | `05_method_d328/` | **a template, not the target.** The already dumped Д3-28 microcode with the field and entropy analysis that took it apart, as a pattern for doing the same here |
 | `06_scripts/` | `extract_flat_scan.py` scan → cards → 5×30 hole matrix; `decode_card.py` matrix → instructions |
 | `08_tangible_media/` | photograph of an **unpunched** aluminium card of the same build. Because no hole covers anything, the printed coding legend on it is fully readable. This is the key to the format |
