@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Промінь-2 - Emulator</title>
+<style>
+  :root {
+    --bg: #14161a; --panel: #1d2127; --panel2: #23282f; --border: #343b44;
+    --text: #d6dae0; --dim: #8a939e; --accent: #e8b44a; --accent-text: #1a1508;
+    --green: #7dc98f; --red: #e07a6a;
+    --console-bg: #262b31; --console-border: #3a424c;
+    --display-value: #ffb02e; --display-glow: rgba(255,176,46,.45);
+    --pc-bg: rgba(232,180,74,.22); --pc-text: #ffd98a; --empty-text: #566069;
+    --cell-bg: #2a3038; --cell-const: #3a3325; --cell-changed: #6b8f3d;
+    --flash: #ff6440; --cards-filter: none;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  html[data-theme="soviet"] {
+    --bg: #170a09; --panel: #241110; --panel2: #2e1514; --border: #4c211d;
+    --text: #ecdcd2; --dim: #a8887c; --accent: #d4a017; --accent-text: #241205;
+    --green: #a8c88f; --red: #ff7a66;
+    --console-bg: #2c1210; --console-border: #55231e;
+    --display-value: #ff4a33; --display-glow: rgba(255,74,51,.5);
+    --pc-bg: rgba(212,160,23,.25); --pc-text: #ffd76a; --empty-text: #6d5148;
+    --cell-bg: #38201d; --cell-const: #4a3517; --cell-changed: #7d8f3d;
+    --flash: #ffd23f;
+    --cards-filter: sepia(.5) saturate(1.6) hue-rotate(-28deg);
+  }
+  html[data-theme="bright"] {
+    --bg: #eef0f2; --panel: #ffffff; --panel2: #f2f4f6; --border: #d4d9df;
+    --text: #23272c; --dim: #68727c; --accent: #b26a00; --accent-text: #ffffff;
+    --green: #2e7d43; --red: #c0392b;
+    --console-bg: #2a2f35; --console-border: #1c2126;
+    --display-value: #ffb02e; --display-glow: rgba(255,176,46,.4);
+    --pc-bg: rgba(178,106,0,.16); --pc-text: #8a5200; --empty-text: #9aa4ae;
+    --cell-bg: #dde2e8; --cell-const: #ecdfb0; --cell-changed: #93c46a;
+    --flash: #e03a20;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.45 system-ui, sans-serif; }
+  header { padding: 14px 20px 10px; border-bottom: 1px solid var(--border);
+           display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  header h1 { font-size: 17px; margin: 0; letter-spacing: .06em;
+    /* nameplate: brushed metal, stamped-in text (light below, dark above) */
+    background: linear-gradient(180deg, #cdd2d8, #a9afb6 55%, #c4c9cf);
+    color: #3d4248;
+    padding: 7px 16px 6px;
+    border-radius: 5px;
+    border: 1px solid #82898f;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.7),
+                inset 0 -1px 2px rgba(0,0,0,.28),
+                0 1px 3px rgba(0,0,0,.35);
+    text-shadow: 0 1px 0 rgba(255,255,255,.65), 0 -1px 1px rgba(0,0,0,.5);
+    filter: var(--cards-filter); }
+  #emblem { height: 36px; width: auto; flex: 0 0 auto; align-self: center;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,.45)); }
+  header .sub { color: var(--dim); font-size: 12.5px; }
+  main { display: grid; grid-template-columns: minmax(430px, 3fr) minmax(360px, 2fr);
+         gap: 14px; padding: 14px 20px; align-items: start; }
+  @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--border);
+           border-radius: 8px; padding: 12px 14px; }
+  .panel h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .1em;
+              color: var(--dim); margin: 0 0 10px; }
+  /* control bar */
+  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  select, button, input[type=text] {
+    background: var(--panel2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 6px 10px; font: inherit; }
+  select { max-width: 320px; }
+  button { cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent);
+                   font-weight: 600; }
+  button:disabled { opacity: .45; cursor: default; }
+  label.klein { color: var(--dim); font-size: 12px; display: inline-flex;
+                gap: 5px; align-items: center; }
+  /* operator console */
+  .console-box { background: var(--console-bg); border: 1px solid var(--console-border); border-radius: 8px;
+          padding: 12px; display: flex; gap: 10px; flex-wrap: wrap; align-items: stretch; }
+  .display { background: #101315; border: 1px solid #000; border-radius: 6px;
+             padding: 8px 12px; text-align: center; min-width: 74px; }
+  .display .value { font: 700 22px/1.2 var(--mono); color: var(--display-value);
+                   text-shadow: 0 0 8px var(--display-glow); white-space: nowrap; }
+  .display .label { font-size: 9.5px; letter-spacing: .12em; color: #7b858f;
+                     text-transform: uppercase; margin-top: 4px; }
+  .console-box .decimal { flex: 1; display: flex; flex-direction: column;
+                   justify-content: center; align-items: flex-end; min-width: 130px; }
+  .console-box .decimal .value { font: 600 17px var(--mono); color: var(--green); }
+  .console-box .decimal .label { color: var(--dim); font-size: 11px; }
+  .status { margin-top: 8px; font: 12.5px var(--mono); color: var(--dim); }
+  .status b { color: var(--text); font-weight: 600; }
+  /* punch cards */
+  #cards { display: flex; flex-direction: column; gap: 10px; max-height: 60vh;
+            overflow: auto; padding-right: 4px; }
+  .card-frame { position: relative; }
+  .card-frame .nr { position: absolute; left: -2px; top: -2px; z-index: 2;
+    background: var(--panel2); color: var(--dim); font: 11px var(--mono);
+    padding: 1px 7px; border-radius: 5px; border: 1px solid var(--border); }
+  svg.card { width: 100%; height: auto; display: block; border-radius: 4px;
+              filter: var(--cards-filter); }
+  /* listing + memory */
+  .listing { font: 12px/1.5 var(--mono); max-height: 320px; overflow: auto;
+             white-space: pre; }
+  .listing .row { padding: 0 6px; border-radius: 4px; }
+  .listing .row.pc { background: var(--pc-bg); color: var(--pc-text); }
+  .listing .row.empty { color: var(--empty-text); }
+  .listing .target { color: var(--green); }
+  #memory { display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; }
+  .cell { aspect-ratio: 1; border-radius: 2px; background: var(--cell-bg);
+           cursor: pointer; position: relative; }
+  .cell.const-cell { background: var(--cell-const); }
+  .cell.changed { background: var(--cell-changed); }
+  .cell.active { outline: 2px solid var(--accent); z-index: 1; }
+  #cell-info { font: 12px var(--mono); color: var(--dim); margin-top: 8px;
+              min-height: 34px; }
+  #cell-info b { color: var(--text); }
+  textarea { width: 100%; background: var(--panel2); color: var(--text);
+             border: 1px solid var(--border); border-radius: 6px;
+             font: 12.5px var(--mono); padding: 8px; min-height: 64px; }
+  #stops { font: 12px/1.6 var(--mono); max-height: 150px; overflow: auto; }
+  #stops .m-stop { color: var(--green); }
+  #stops .m-error { color: var(--red); }
+  #stops .m-warn { color: var(--accent); }
+  .hint { color: var(--dim); font-size: 12px; margin-top: 6px; }
+  #footer { text-align: center; color: var(--dim); font-size: 12px;
+    line-height: 1.7; padding: 22px 20px 26px; border-top: 1px solid var(--border);
+    margin-top: 10px; }
+  #footer a { color: var(--dim); }
+  #footer a:hover { color: var(--accent); }
+  #footer-logo { margin-top: 10px; width: 80px; height: 80px; border-radius: 12px;
+    opacity: .75; transition: opacity .2s; }
+  #footer-logo:hover { opacity: 1; }
+  input[type=range] { accent-color: var(--accent); }
+  .langs { margin-left: auto; display: flex; gap: 4px; }
+  .langs button { padding: 3px 9px; font-size: 12px; border-radius: 5px; }
+  .langs button.active, .themes button.active { background: var(--accent);
+    color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  .themes { display: flex; gap: 4px; }
+  .themes button { width: 26px; height: 26px; padding: 0; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center; }
+  .themes .dot { display: block; width: 12px; height: 12px;
+    border-radius: 50%; border: 1px solid rgba(128,128,128,.6); }
+  .themes [data-theme="dark"] .dot { background: #14161a; }
+  .themes [data-theme="soviet"] .dot { background: #b3231a; }
+  .themes [data-theme="bright"]   .dot { background: #f2f3f5; }
+  /* progress: one segment per command slot, heat coloring by visit count */
+  #progress { margin-top: 12px; }
+  #progress-head { display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--dim); margin-bottom: 5px;
+    text-transform: uppercase; letter-spacing: .08em; }
+  #progress-head b { color: var(--text); }
+  #progress-bar { display: flex; gap: 1px; align-items: stretch;
+    height: 14px; border-radius: 4px; overflow: hidden; }
+  .seg { flex: 1; min-width: 2px; background: var(--cell-bg);
+         transition: background .25s; border-radius: 1px; }
+  .seg.card-gap { margin-left: 4px; }
+  .seg.empty { opacity: .25; }
+  .seg.h1 { background: var(--green); }
+  .seg.h2 { background: var(--accent); }
+  .seg.h3 { background: var(--red); }
+  .seg.now { background: #fff; box-shadow: 0 0 7px 1px var(--display-value);
+               position: relative; z-index: 1; }
+  .flash { fill: none; stroke: var(--flash); pointer-events: none;
+           animation: flashPulse .8s ease-out forwards; }
+  @keyframes flashPulse {
+    0%   { opacity: 1; stroke-width: 4.5; r: 13; }
+    100% { opacity: 0; stroke-width: 1.5; r: 15; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <svg id="emblem" viewBox="0 0 1010 260" aria-hidden="true">
+    <defs>
+      <linearGradient id="chrom" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f8fafc"/><stop offset=".35" stop-color="#c9d0d6"/>
+        <stop offset=".55" stop-color="#8b949c"/><stop offset=".75" stop-color="#d8dee3"/>
+        <stop offset="1" stop-color="#9aa2aa"/>
+      </linearGradient>
+    </defs>
+    <g fill="none" stroke="url(#chrom)" stroke-width="11" stroke-linejoin="miter"
+       stroke-miterlimit="30" stroke-linecap="square">
+      <!-- ray and pennant with swallowtail -->
+      <path d="M 12 178 L 800 60 L 975 30 L 872 130 L 992 215 Z"/>
+      <!-- double line of the needle -->
+      <path d="M 30 176 L 296 152"/>
+      <!-- Промінь lettering: every stroke connects bottom and top rail -->
+      <path d="M 290 189 L 314 133"/>
+      <path d="M 332 190 L 356 127"/>
+      <path d="M 368 242 L 404 119 M 402 124 L 436 136 L 392 168"/>
+      <path d="M 436 194 L 458 138 L 486 142 L 464 196 Z"/>
+      <path d="M 496 196 L 522 104 L 540 198 L 566 98 L 584 197"/>
+      <path d="M 596 199 L 616 150"/>
+      <path d="M 630 200 L 656 92 M 640 168 L 682 138 M 668 202 L 694 87"/>
+      <path d="M 706 204 L 734 75 M 712 172 L 744 178 L 706 202"/>
+      <!-- model glyph inside the pennant, left of the swallowtail -->
+      <path d="M 796 102 L 820 76 L 842 98 L 788 172 L 850 166"/>
+    </g>
+    <circle cx="622" cy="128" r="7" fill="url(#chrom)"/>
+  </svg>
+  <h1>ЭВМ «Промінь-2» - Emulator</h1>
+  <span class="sub" id="subtitle"></span>
+  <div class="langs">
+    <button data-lang="en">EN</button><button data-lang="ru">РУ</button>
+  </div>
+  <div class="themes">
+    <button data-theme="dark"><span class="dot"></span></button><button data-theme="soviet"><span class="dot"></span></button><button data-theme="bright"><span class="dot"></span></button>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="panel">
+      <h2 id="t-deck-panel"></h2>
+      <div class="controls">
+        <select id="deck-select" autocomplete="off"></select>
+        <button id="btn-start" class="primary"></button>
+        <button id="btn-step"></button>
+        <button id="btn-reset"></button>
+        <label class="klein"><span id="t-speed"></span>
+          <input type="range" id="speed" min="1" max="10" value="4" autocomplete="off"></label>
+        <label class="klein"><input type="checkbox" id="pause-at-stop" checked autocomplete="off">
+          <span id="t-stop-pause"></span></label>
+        <label class="klein"><input type="checkbox" id="code19sh" autocomplete="off">
+          <span id="t-code19"></span></label>
+      </div>
+      <div id="deck-hint" class="hint"></div>
+      <h2 style="margin-top:12px" id="t-inputs"></h2>
+      <textarea id="inputs" spellcheck="false" autocomplete="off"></textarea>
+      <div class="hint" id="t-inputs-hint"></div>
+      <div id="progress">
+        <div id="progress-head"><span id="t-progress"></span>
+          <span id="progress-text"></span></div>
+        <div id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px">
+      <h2><span id="t-cards"></span> <span id="card-count" style="text-transform:none"></span></h2>
+      <div id="cards"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2 id="t-console"></h2>
+      <div class="console-box">
+        <div class="display"><div class="value" id="a-adr">000</div>
+          <div class="label">Адрес</div></div>
+        <div class="display"><div class="value" id="a-zp">+</div>
+          <div class="label">Знак пор</div></div>
+        <div class="display"><div class="value" id="a-por">0</div>
+          <div class="label">Порядок</div></div>
+        <div class="display"><div class="value" id="a-zm">+</div>
+          <div class="label">Знак мант</div></div>
+        <div class="display"><div class="value" id="a-mant">00000</div>
+          <div class="label">Мантисса</div></div>
+        <div class="decimal"><div class="value" id="a-dec">0</div>
+          <div class="label" id="t-dec"></div></div>
+      </div>
+      <div class="status" id="status-line"></div>
+    </div>
+
+    <div class="panel" style="margin-top:14px">
+      <h2 id="t-stops"></h2>
+      <div id="stops"><span class="placeholder" style="color:var(--dim)"></span></div>
+    </div>
+
+    <div class="panel" style="margin-top:14px">
+      <h2 id="t-listing"></h2>
+      <div class="listing" id="listing"></div>
+    </div>
+
+    <div class="panel" style="margin-top:14px">
+      <h2 id="t-memory"></h2>
+      <div id="memory"></div>
+      <div id="cell-info"></div>
+    </div>
+  </section>
+</main>
+
+<footer id="footer">
+  <div><a href="mailto:elara@elaranovikova.com">elara@elaranovikova.com</a> &nbsp;·&nbsp;
+       <a href="https://elaranovikova.com">elaranovikova.com</a> &nbsp;·&nbsp;
+       <a href="https://github.com/elaranovikova">github.com/elaranovikova</a> ·
+       <a href="https://x.com/ElaraNovikova">x.com/ElaraNovikova</a></div>
+  <div>© by Elara S. Novikova 2026</div>
+  <a href="https://elaranovikova.com"><img id="footer-logo" src="elara-logo.png"
+     alt="Elara S. Novikova" width="80" height="80"></a>
+</footer>
+
+<script src="decks.js"></script>
+<script>
+"use strict";
+
+/* ============ Trilingual UI (EN default / RU / DE) ============ */
+const I18N = {
+  en: {
+    subtitle: "Kyiv/Severodonetsk 1967 · reconstructed from the scanned card archive · metal = contact, hole = erased",
+    deckPanel: "Program / card deck", cards: "Punch cards", console: "Operator console",
+    stops: "Stops & messages", listing: "Program listing", memory: "Number memory 000–199",
+    inputs: "Inputs (as at the console)", speed: "Speed",
+    stopPause: "pause at Ост", code19: "code 19 = sh",
+    start: "Run", pause: "Pause", step: "Step", reset: "Reset",
+    dec: "Accumulator (decimal)", placeholder: "- none yet -",
+    cellInfo0: "Click a cell to inspect it; gold = constant, green = set/changed.",
+    inputsHint: "Applied on Reset/Run. <code>raw:</code> = raw digit pattern (address & counter words).",
+    inputsPh: "one per line: cell=value  or  cell=raw:-00095\ne.g.  51=3.5",
+    badge: "Card {0}", cardCount: "- {0} cards · {1} command slots", wordCards: "cards",
+    ready: "ready", run: "PC <b>{0}</b> · steps <b>{1}</b>", nops: " · voided slots skipped: {0}",
+    wordCell: "cell", wordCmd: "→ cmd", voided: "(voided)",
+    constant: " (constant)",
+    cellInfoValue: "Cell <b>{0}</b>{1}: <b>{2}</b> &nbsp; machine word {3} &nbsp; address field {4} · counter {5}",
+    msgStop: "Ост at {0} · code {1} · S = {2}",
+    msgEndEmpty: "program end: unpunched slot at {0}",
+    msgRunEnd: "- run finished after {0} steps -",
+    msgEmergency: "аварийный останов (emergency stop): {0}",
+    msgProtected: "Зп into constant cell {0} ignored",
+    msgLimit: "step limit 500 000 reached - endless loop?",
+    msgInput: "input not understood: {0}", msgInputErr: "input {0}: {1}",
+    errCell: "cell address {0} outside 000–199",
+    errOpcode: "unknown operation code {0} at {1}",
+    fortstep: "Program coverage", progressText: "<b>{0} %</b> · {1} of {2} commands run",
+    themeDark: "Dark", themeSoviet: "Soviet red", themeBright: "Bright",
+    errRaw: "raw pattern: [+-]DDDDD[eN]", errAddrRange: "address > 199",
+    groups: {}, deckNames: {}, hints: {},
+  },
+  ru: {
+    subtitle: "Киев/Северодонецк, 1967 · реконструкция по сканам перфокарт · металл = контакт, отверстие = стёрто",
+    deckPanel: "Программа / колода карт", cards: "Перфокарты", console: "Пульт управления",
+    stops: "Остановы и сообщения", listing: "Листинг программы", memory: "Числовая память 000–199",
+    inputs: "Ввод (как с пульта)", speed: "Темп",
+    stopPause: "пауза на Ост", code19: "код 19 = sh",
+    start: "Пуск", pause: "Пауза", step: "Шаг", reset: "Сброс",
+    dec: "Сумматор (десятичный)", placeholder: "- пока нет -",
+    cellInfo0: "Щёлкните ячейку: жёлтые - константы, зелёные - заданные/изменённые.",
+    inputsHint: "Применяется при Сбросе/Пуске. <code>raw:</code> - сырой набор цифр (адресные и счётные слова).",
+    inputsPh: "в строке: ячейка=значение  или  ячейка=raw:-00095\nнапр.  51=3.5",
+    badge: "Карта {0}", cardCount: "- {0} карт · {1} позиций команд", wordCards: "карт",
+    ready: "готов", run: "команда <b>{0}</b> · шагов <b>{1}</b>", nops: " · пропущено выбитых позиций: {0}",
+    wordCell: "ячейка", wordCmd: "→ ком.", voided: "(выбито)",
+    constant: " (константа)",
+    cellInfoValue: "Ячейка <b>{0}</b>{1}: <b>{2}</b> &nbsp; машинное слово {3} &nbsp; адресное поле {4} · счётчик {5}",
+    msgStop: "Ост на {0} · код {1} · S = {2}",
+    msgEndEmpty: "конец программы: непробитая позиция {0}",
+    msgRunEnd: "- выполнение завершено, шагов: {0} -",
+    msgEmergency: "аварийный останов: {0}",
+    msgProtected: "Зп в ячейку констант {0} игнорируется",
+    msgLimit: "достигнут предел 500 000 шагов - зацикливание?",
+    msgInput: "не понял ввод: {0}", msgInputErr: "ввод {0}: {1}",
+    errCell: "адрес ячейки {0} вне 000–199",
+    errOpcode: "неизвестный код операции {0} в команде {1}",
+    fortstep: "Охват программы", progressText: "<b>{0} %</b> · выполнено {1} из {2} команд",
+    themeDark: "Тёмная", themeSoviet: "Советская красная", themeBright: "Светлая",
+    errRaw: "формат: [+-]DDDDD[eN]", errAddrRange: "адрес > 199",
+    groups: {"Examples": "Примеры",
+              "Card archive (85 scans, Radon 2022)": "Архив перфокарт (85 сканов, Radon 2022)"},
+    deckNames: {"Example: circumference 2·π·r": "Пример: длина окружности 2·π·r",
+                "Example: loop with СчП (5 × +1)": "Пример: цикл со СчП (5 × +1)",
+                "Example: π by Machin's formula (self-check)": "Пример: π по формуле Мэчина (самопроверка)"},
+    hints: {"Example: circumference 2·π·r": "Ввод: ячейка 051 = радиус. Результат на останове 001.",
+            "Example: loop with СчП (5 × +1)": "Ячейка 010 - счётное слово: знак −, счётчик 100−N. Результат: 5.",
+            "Example: π by Machin's formula (self-check)": "Вычисляет π одними арифметическими действиями и сверяет себя с константой π в ячейке 081. Останов 1: π, останов 2: отклонение."},
+  },
+};
+let LANG = localStorage.getItem("promin2-lang") || "en";
+if (!I18N[LANG]) LANG = "en";   // a visitor may still have a retired language stored
+let THEME = localStorage.getItem("promin2-theme") || "bright";
+function t(key, ...args) {
+  let text = I18N[LANG][key] ?? I18N.en[key] ?? key;
+  args.forEach((a, i) => { text = text.split(`{${i}}`).join(a); });
+  return text;
+}
+function tDeckName(d)  { return I18N[LANG].deckNames[d.name] || d.name; }
+function tDeckGroup(d) { return I18N[LANG].groups[d.group] || d.group; }
+function tDeckHint(d)  { return I18N[LANG].hints[d.name] || d.hint || ""; }
+
+/* ============ Emulator core - port of promin2_emu.py ============ */
+
+class EmergencyStop extends Error {}
+
+class Num {
+  constructor(sm = 1, mant = 0, e = 0) {
+    this.sm = (mant === 0 && sm >= 0) ? 1 : (sm >= 0 ? 1 : -1);
+    this.mant = mant; this.e = e;
+  }
+  static fromFloat(x) {
+    if (x === 0 || !isFinite(x)) return new Num();
+    const sm = x > 0 ? 1 : -1; x = Math.abs(x);
+    let e = Math.floor(Math.log10(x)) + 1;
+    let mant = Math.floor(x / Math.pow(10, e) * 100000 + 1e-9);
+    if (mant >= 100000) { mant = Math.floor(mant / 10); e += 1; }
+    const z = new Num(sm, mant, e); z.normalize();
+    if (z.e > 9) throw new EmergencyStop("|x| >= 10^9");
+    return z;
+  }
+  static raw(sm, mant, e) { const z = new Num(1, mant, e); z.sm = sm >= 0 ? 1 : -1; return z; }
+  isZero() { return this.mant === 0; }
+  toFloat() { return this.sm * (this.mant / 100000) * Math.pow(10, this.e); }
+  addressField() { return Math.floor(this.mant / 100); }
+  cycles() { return this.mant % 100; }
+  normalize() {
+    if (this.mant === 0) { this.e = 0; this.sm = 1; return; }
+    while (this.mant < 10000) { this.mant *= 10; this.e -= 1; }
+    if (this.e < -9) { this.mant = 0; this.e = 0; this.sm = 1; }
+  }
+  clone() { return Num.raw(this.sm, this.mant, this.e); }
+}
+
+function align(z, targetE) {
+  const shift = targetE - z.e; let m = z.mant;
+  if (shift > 0) m = shift <= 5 ? Math.floor(m / Math.pow(10, shift)) : 0;
+  else if (shift < 0) m = m * Math.pow(10, -shift);
+  return z.sm * m;
+}
+function add(a, b, sub = false) {
+  if (a.isZero() && b.isZero()) return new Num();
+  let e = Math.max(a.e, b.e);
+  const mb = sub ? -align(b, e) : align(b, e);
+  let sum = align(a, e) + mb;
+  const sm = sum >= 0 ? 1 : -1; sum = Math.abs(sum);
+  if (sum >= 100000) { sum = Math.floor(sum / 10); e += 1; }
+  if (sum !== 0 && e > 9) throw new EmergencyStop("|S| ≥ 10⁹ (addition)");
+  const z = Num.raw(sm, sum, e); z.normalize(); return z;
+}
+function multiply(a, b) {
+  if (a.isZero() || b.isZero()) return new Num();
+  let product = a.mant * b.mant, e = a.e + b.e;
+  while (product < 1e9) { product *= 10; e -= 1; }
+  const z = Num.raw(a.sm * b.sm, Math.floor(product / 100000), e);
+  z.normalize();
+  if (!z.isZero() && z.e > 9) throw new EmergencyStop("|S| ≥ 10⁹ (multiplication)");
+  return z;
+}
+function divide(a, b) {
+  if (b.isZero()) throw new EmergencyStop("division by 0");
+  if (a.isZero()) return new Num();
+  let mant = Math.floor(a.mant * 100000 / b.mant), e = a.e - b.e;
+  while (mant >= 100000) { mant = Math.floor(mant / 10); e += 1; }
+  const z = Num.raw(a.sm * b.sm, mant, e); z.normalize();
+  if (!z.isZero() && z.e > 9) throw new EmergencyStop("|S| ≥ 10⁹ (division)");
+  return z;
+}
+function addFixed(a, b, sub = false) {
+  const mb = sub ? -b.sm * b.mant : b.sm * b.mant;
+  const sum = a.sm * a.mant + mb;
+  return Num.raw(sum >= 0 ? 1 : -1, Math.abs(sum) % 100000, a.e);
+}
+
+const CONSTANTS = (() => {
+  const f = Num.fromFloat, k = {};
+  k[0] = new Num(); k[80] = Num.raw(1, 0, 5);
+  const w = {81:3.1416, 82:6.2832, 83:0.31831, 84:0.15915, 85:1.5708, 86:1, 87:2,
+    88:0.5, 89:0.25, 91:10, 92:2.3026, 93:0.43429, 94:57.296, 95:3437.7,
+    96:206260, 97:0.017453, 98:0.00029089, 99:0.0000048481, 180:3, 181:9,
+    183:0.57721, 184:2.1544, 185:0.79788, 186:4.6415, 187:1.7725, 188:1.4646,
+    189:24, 190:0.101, 191:720, 192:5040, 193:3628800, 194:2.7183, 195:7.3891,
+    196:1.6487, 197:0.3679, 198:0.6065, 199:0.1};
+  for (const [a, v] of Object.entries(w)) k[a] = f(v);
+  k[90] = Num.raw(1, 100, 0); k[182] = Num.raw(1, 300, 0);
+  return k;
+})();
+const PROTECTED = new Set([0]);
+for (let i = 80; i < 100; i++) PROTECTED.add(i);
+for (let i = 180; i < 200; i++) PROTECTED.add(i);
+
+const OPS = {1:"Сл",2:"Выч1",3:"Выч2",4:"Умн",5:"Дел",6:"Чт",7:"Зп",8:"БП",
+  9:"УП1",10:"УП2",11:"ЧтII",12:"ЗпII",13:"БПII",14:"Слф",15:"Вычф",16:"sin",
+  17:"cos",18:"tg",19:"СчП",20:"ch",21:"th",22:"asin",23:"acos",24:"atg",
+  25:"√",26:"exp",27:"ln",29:"Фр",31:"Ост"};
+const JUMPS = new Set([8, 9, 10]);
+
+/* cards (5x30 bit patterns) -> command list; metal counts, a hole erases */
+function decodeCards(cards) {
+  const prog = [];
+  for (const card of cards) {
+    for (let g = 0; g < 10; g++) {
+      const c = g * 3;
+      const column = (idx) => card.map(row => row[idx] === "1");
+      const value = (bits, weights) => weights.reduce((s, w, i) => s + (bits[i] ? 0 : w), 0);
+      const op = value(column(c), [16, 8, 4, 2, 1]);
+      const zs = column(c + 1), es = column(c + 2);
+      const adr = (zs[4] ? 0 : 100) + value(zs.slice(0, 4), [5, 2, 1, 1]) * 10
+                + value(es.slice(0, 4), [5, 2, 1, 1]);
+      prog.push({op, adr, empty: op === 31 && adr === 199 &&
+        card.every(r => r.slice(c, c + 3) === "000") });
+    }
+  }
+  return prog;
+}
+
+function mathFn(name, f, s, limit, kind) {
+  const x = s.toFloat();
+  if (kind === "abs>=" && Math.abs(x) >= limit) throw new EmergencyStop(`${name}: |S| ≥ ${limit}`);
+  if (kind === "abs>"  && Math.abs(x) >  limit) throw new EmergencyStop(`${name}: |S| > ${limit}`);
+  if (kind === "<"  && x <  limit) throw new EmergencyStop(`${name}: S < ${limit}`);
+  if (kind === "<=" && x <= limit) throw new EmergencyStop(`${name}: S ≤ ${limit}`);
+  return Num.fromFloat(f(x));
+}
+
+class Emulator {
+  constructor(program, code19sh = false) {
+    this.program = program.slice(0, 160);
+    this.code19sh = code19sh;
+    this.celln = []; this.changed = new Set();
+    for (let i = 0; i < 200; i++)
+      this.celln[i] = (CONSTANTS[i] || new Num()).clone();
+    this.s = new Num(); this.pc = 0; this.steps = 0; this.nops = 0;
+    this.messages = []; this.lastCell = -1;
+    this.visited = new Array(this.program.length).fill(0);
+  }
+  read(a) {
+    if (a < 0 || a > 199) throw new EmergencyStop(t("errCell", a));
+    this.lastCell = a; return this.celln[a].clone();
+  }
+  write(a, w) {
+    if (a < 0 || a > 199) throw new EmergencyStop(t("errCell", a));
+    if (PROTECTED.has(a)) {
+      this.messages.push({kind: "warn", text: t("msgProtected", String(a).padStart(3, "0"))});
+      return;
+    }
+    this.celln[a] = w.clone(); this.changed.add(a); this.lastCell = a;
+  }
+  indirect(a) { return this.read(a).addressField(); }
+  step() {                       /* returns '' | 'stop' | 'end' -> renamed below */
+    if (this.pc < 0 || this.pc >= this.program.length) return "end";
+    const {op, adr, empty} = this.program[this.pc];
+    const pcAlt = this.pc; this.pc += 1; this.steps += 1;
+    this.visited[pcAlt] += 1;
+    if (empty) {
+      this.messages.push({kind: "stop", text: t("msgEndEmpty", f3(pcAlt))});
+      return "end";
+    }
+    switch (op) {
+      case 0: this.nops += 1; break;      /* fully punched-out (voided) command */
+      case 1: this.s = add(this.s, this.read(adr)); break;
+      case 2: this.s = add(this.s, this.read(adr), true); break;
+      case 3: this.s = add(this.read(adr), this.s, true); break;
+      case 4: this.s = multiply(this.s, this.read(adr)); break;
+      case 5: this.s = divide(this.s, this.read(adr)); break;
+      case 6: this.s = this.read(adr); break;
+      case 7: this.write(adr, this.s); break;
+      case 8: this.pc = adr; break;
+      case 9: if (this.s.isZero()) this.pc = adr; break;
+      case 10: if (this.s.sm < 0 && !this.s.isZero()) this.pc = adr; break;
+      case 11: this.s = this.read(this.indirect(adr)); break;
+      case 12: this.write(this.indirect(adr), this.s); break;
+      case 13: this.pc = this.indirect(adr); break;
+      case 14: this.s = addFixed(this.s, this.read(adr)); break;
+      case 15: this.s = addFixed(this.s, this.read(adr), true); break;
+      case 16: this.s = mathFn("sin", Math.sin, this.s); break;
+      case 17: this.s = mathFn("cos", Math.cos, this.s); break;
+      case 18: this.s = mathFn("tg", Math.tan, this.s); break;
+      case 19:
+        if (this.code19sh) this.s = mathFn("sh", Math.sinh, this.s, 22, "abs>=");
+        else this.s = this.schp(adr);
+        break;
+      case 20: this.s = mathFn("ch", Math.cosh, this.s, 22, "abs>="); break;
+      case 21: this.s = mathFn("th", Math.tanh, this.s, 22, "abs>="); break;
+      case 22: this.s = mathFn("asin", Math.asin, this.s, 1, "abs>"); break;
+      case 23: this.s = mathFn("acos", Math.acos, this.s, 1, "abs>"); break;
+      case 24: this.s = mathFn("atg", Math.atan, this.s); break;
+      case 25: this.s = mathFn("√", Math.sqrt, this.s, 0, "<"); break;
+      case 26: this.s = mathFn("exp", Math.exp, this.s, 22, "abs>="); break;
+      case 27: this.s = mathFn("ln", Math.log, this.s, 0, "<="); break;
+      case 29: {
+        const a = this.read(adr);
+        this.s = Num.raw(a.isZero() ? 1 : a.sm, this.s.mant, this.s.e);
+        break;
+      }
+      case 31:
+        this.messages.push({kind: "stop",
+          text: t("msgStop", f3(pcAlt), f3(adr), fmtDec(this.s))});
+        return "stop";
+      default:
+        throw new EmergencyStop(t("errOpcode", op, f3(pcAlt)));
+    }
+    return "";
+  }
+  schp(addressField) {
+    const cell = this.read(addressField);
+    const addressPart = (cell.addressField() + 1) % 1000;
+    let cycles = cell.cycles() + 1, sm = cell.sm;
+    if (cycles >= 100) { cycles = 0; sm = 1; }
+    const updated = Num.raw(sm, addressPart * 100 + cycles, cell.e);
+    if (!PROTECTED.has(addressField)) { this.celln[addressField] = updated.clone(); this.changed.add(addressField); }
+    return updated;
+  }
+}
+
+/* ============ User interface ============ */
+const f3 = n => String(n).padStart(3, "0");
+const fmtDec = z => { const v = z.toFloat();
+  return Math.abs(v) < 1e-12 ? "0" : Number(v.toPrecision(6)).toString(); };
+
+let emu = null, runTimer = null, deckIndex = 2, program = [];  // default deck: the π example
+
+const el = id => document.getElementById(id);
+
+function fillDeckSelect() {
+  const sel = el("deck-select");
+  sel.innerHTML = ""; let group = null, og = null;
+  DECKS.forEach((d, i) => {
+    if (d.group !== group) { group = d.group;
+      og = document.createElement("optgroup"); og.label = tDeckGroup(d); sel.appendChild(og); }
+    const o = document.createElement("option"); o.value = i;
+    o.textContent = `${tDeckName(d)}  (${d.cards.length} ${t("wordCards")})`;
+    og.appendChild(o);
+  });
+  sel.value = String(deckIndex);
+  if (sel.selectedIndex < 0) { deckIndex = 0; sel.value = "0"; }
+}
+
+/* --- punch card as SVG --- */
+const WEIGHT_LABELS = [["16","8","4","2","1"], ["5","2","1","1","1"], ["5","2","1","1",""]];
+function drawCard(card, cardNo) {
+  const SP = 26, RA = 34, OX = 26, OY = 46, B = OX * 2 + 30 * SP, H = OY + 5 * RA + 16;
+  let s = `<svg class="card" viewBox="0 0 ${B} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  s += `<defs><linearGradient id="alu${cardNo}" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#c3c8ce"/><stop offset=".5" stop-color="#aeb4bb"/>
+    <stop offset="1" stop-color="#c0c5cb"/></linearGradient></defs>`;
+  s += `<rect x="1" y="1" width="${B-2}" height="${H-2}" rx="7" fill="url(#alu${cardNo})"
+        stroke="#5c636b" stroke-width="1.5"/>`;
+  for (let c = 0; c < 30; c++) {
+    const x = OX + c * SP + SP / 2;
+    s += `<text x="${x}" y="15" text-anchor="middle" font-size="10.5"
+          font-family="var(--mono)" fill="#2a2d31">${c + 1}</text>`;
+    s += `<line x1="${x}" y1="19" x2="${x}" y2="25" stroke="#2a2d31" stroke-width="1"/>`;
+    if (c % 3 === 0 && c > 0)
+      s += `<line x1="${OX + c * SP}" y1="30" x2="${OX + c * SP}" y2="${H - 10}"
+            stroke="#8d939a" stroke-width=".7" stroke-dasharray="2 3"/>`;
+  }
+  s += `<text x="${B - 10}" y="${H - 8}" text-anchor="end" font-size="10"
+        font-family="var(--mono)" fill="#2a2d31">КАРТА № ${cardNo + 1}</text>`;
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 30; c++) {
+      const x = OX + c * SP + SP / 2, y = OY + r * RA;
+      const hole = card[r][c] === "1";
+      if (hole) {
+        s += `<circle cx="${x}" cy="${y}" r="9.5" fill="#0d0e10"/>
+              <circle cx="${x}" cy="${y}" r="9.5" fill="none" stroke="#7c828a" stroke-width=".8"/>`;
+      } else {
+        const t = WEIGHT_LABELS[c % 3][r];
+        if (t !== "") {
+          s += `<circle cx="${x}" cy="${y}" r="8.5" fill="none" stroke="#2a2d31" stroke-width="1.1"/>
+                <text x="${x}" y="${y + 3.5}" text-anchor="middle" font-size="${t.length > 1 ? 8 : 9.5}"
+                font-family="var(--mono)" fill="#2a2d31">${t}</text>`;
+        } else if ((c === 2 || c === 26)) {
+          s += `<text x="${x}" y="${y + 4}" text-anchor="middle" font-size="11"
+                font-family="var(--mono)" fill="#2a2d31">+</text>`;
+        }
+      }
+    }
+  }
+  s += `<rect id="mark-${cardNo}" x="0" y="30" width="${3 * SP}" height="${H - 40}"
+        rx="4" fill="rgba(232,180,74,.28)" stroke="#e8b44a" stroke-width="1.2"
+        visibility="hidden"/>`;
+  s += `<g id="flash-${cardNo}"></g>`;
+  s += `</svg>`;
+  return s;
+}
+
+function showCards(deck) {
+  const box = el("cards"); box.innerHTML = "";
+  deck.cards.forEach((card, i) => {
+    const frame = document.createElement("div");
+    frame.className = "card-frame";
+    frame.innerHTML = `<span class="nr">${t("badge", i + 1)}</span>` + drawCard(card, i);
+    box.appendChild(frame);
+  });
+  el("card-count").textContent = t("cardCount", deck.cards.length, deck.cards.length * 10);
+}
+
+/* scroll only the container - scrollIntoView would move the whole page */
+function scrollWithinContainer(container, elem) {
+  const c = container.getBoundingClientRect(), e = elem.getBoundingClientRect();
+  if (e.top < c.top || e.bottom > c.bottom)
+    container.scrollTop += (e.top - c.top) - c.height / 2 + e.height / 2;
+}
+
+let lastCard = -1;
+function markCommand(pc, flash = true) {
+  document.querySelectorAll('[id^="mark-"]').forEach(m => m.setAttribute("visibility", "hidden"));
+  document.querySelectorAll('[id^="flash-"]').forEach(g => { g.innerHTML = ""; });
+  if (pc == null || pc < 0 || pc >= program.length) return;
+  const card = Math.floor(pc / 10), group = pc % 10;
+  const mark = document.getElementById(`mark-${card}`);
+  if (!mark) return;
+  mark.setAttribute("x", 26 + group * 3 * 26);
+  mark.setAttribute("visibility", "visible");
+  if (flash) {
+    // flash the holes of the active command (three columns)
+    const cardBits = DECKS[deckIndex].cards[card];
+    const gr = document.getElementById(`flash-${card}`);
+    let circles = "";
+    for (let r = 0; r < 5; r++)
+      for (let c = group * 3; c < group * 3 + 3; c++)
+        if (cardBits[r][c] === "1") {
+          const x = 26 + c * 26 + 13, y = 46 + r * 34;
+          circles += `<circle cx="${x}" cy="${y}" r="13" class="flash"/>`;
+        }
+    gr.innerHTML = circles;
+  }
+  if (card !== lastCard) {
+    lastCard = card;
+    scrollWithinContainer(el("cards"), mark.closest(".card-frame"));
+  }
+}
+
+/* --- listing, memory, console --- */
+function showListing() {
+  const targets = new Set(program.filter(b => !b.empty && JUMPS.has(b.op)).map(b => b.adr));
+  el("listing").innerHTML = program.map((b, i) => {
+    const pcCls = i === (emu ? emu.pc : 0) ? " pc" : "";
+    if (b.empty) return `<div class="row empty${pcCls}">${f3(i)}   ---</div>`;
+    const name = b.op === 0 ? t("voided") : (OPS[b.op] || "?" + b.op);
+    const kind = JUMPS.has(b.op) ? t("wordCmd") : t("wordCell");
+    const marker = targets.has(i) ? `<span class="target">►</span>` : " ";
+    return `<div class="row${pcCls}">${f3(i)} ${marker} ${name.padEnd(6)} ${f3(b.adr)}  <span style="color:var(--dim)">${kind} ${f3(b.adr)}</span></div>`;
+  }).join("");
+  const aktiv = el("listing").querySelector(".pc");
+  if (aktiv) scrollWithinContainer(el("listing"), aktiv);
+}
+
+function buildMemoryGrid() {
+  const grid = el("memory"); grid.innerHTML = "";
+  for (let i = 0; i < 200; i++) {
+    const z = document.createElement("div");
+    z.className = "cell" + (PROTECTED.has(i) ? " const-cell" : "");
+    z.dataset.a = i;
+    z.onclick = () => showCell(i);
+    grid.appendChild(z);
+  }
+}
+function showCell(a) {
+  const z = emu ? emu.celln[a] : (CONSTANTS[a] || new Num());
+  const word = `${z.sm > 0 ? "+" : "−"}0,${String(z.mant).padStart(5, "0")}·10<sup>${z.e}</sup>`;
+  el("cell-info").innerHTML = t("cellInfoValue", f3(a),
+    PROTECTED.has(a) ? t("constant") : "", fmtDec(z), word,
+    f3(z.addressField()), String(z.cycles()).padStart(2, "0"));
+}
+function paintMemory() {
+  document.querySelectorAll("#memory .cell").forEach(z => {
+    const a = +z.dataset.a;
+    z.classList.toggle("changed", !!emu && emu.changed.has(a));
+    z.classList.toggle("active", !!emu && emu.lastCell === a);
+  });
+}
+function paintConsole() {
+  const s = emu ? emu.s : new Num();
+  el("a-adr").textContent = f3(emu ? Math.max(emu.lastCell, 0) : 0);
+  el("a-zp").textContent = s.e >= 0 ? "+" : "−";
+  el("a-por").textContent = Math.abs(s.e);
+  el("a-zm").textContent = s.sm >= 0 ? "+" : "−";
+  el("a-mant").textContent = String(s.mant).padStart(5, "0");
+  el("a-dec").textContent = fmtDec(s);
+  el("status-line").innerHTML = emu
+    ? t("run", f3(emu.pc), emu.steps) + (emu.nops ? t("nops", emu.nops) : "")
+    : t("ready");
+}
+function logMessage(kind, text) {
+  const box = el("stops");
+  const placeholder = box.querySelector(".placeholder");
+  if (placeholder) placeholder.remove();
+  const cls = kind === "error" ? "m-error" : kind === "warn" ? "m-warn" : "m-stop";
+  box.insertAdjacentHTML("beforeend", `<div class="${cls}">${text}</div>`);
+  box.scrollTop = box.scrollHeight;
+}
+
+/* --- controls --- */
+function applyInputs() {
+  for (const line of el("inputs").value.split("\n")) {
+    const lineText = line.split("#")[0].trim();
+    if (!lineText) continue;
+    const m = lineText.match(/^(\d{1,3})\s*=\s*(raw:)?\s*(.+)$/);
+    if (!m) { logMessage("warn", t("msgInput", lineText)); continue; }
+    const a = +m[1];
+    try {
+      let w;
+      if (m[2]) {
+        const r = m[3].trim().match(/^([+-]?)(\d{1,5})(?:[eE](-?\d))?$/);
+        if (!r) throw new Error(t("errRaw"));
+        w = Num.raw(r[1] === "-" ? -1 : 1, +r[2].padStart(5, "0"), r[3] ? +r[3] : 0);
+      } else w = Num.fromFloat(parseFloat(m[3]));
+      if (a > 199) throw new Error(t("errAddrRange"));
+      emu.celln[a] = w; emu.changed.add(a);
+    } catch (err) { logMessage("warn", t("msgInputErr", lineText, err.message)); }
+  }
+}
+
+function reset() {
+  stopRun();
+  const deck = DECKS[deckIndex];
+  program = decodeCards(deck.cards);
+  emu = new Emulator(program, el("code19sh").checked);
+  el("stops").innerHTML = `<span class="placeholder" style="color:var(--dim)">${t("placeholder")}</span>`;
+  const lines = [];
+  for (const [a, v] of Object.entries(deck.inputs || {})) lines.push(`${a}=${v}`);
+  for (const [a, v] of Object.entries(deck.inputs_raw || {})) lines.push(`${a}=raw:${v}`);
+  if (el("inputs").dataset.deck != deckIndex) {
+    el("inputs").value = lines.join("\n");
+    el("inputs").dataset.deck = deckIndex;
+  }
+  applyInputs();
+  buildProgress();
+  showListing(); paintConsole(); paintMemory(); paintProgress(); markCommand(0);
+  el("btn-start").disabled = false; el("btn-step").disabled = false;
+  el("btn-start").textContent = t("start");
+}
+
+/* one machine step without rendering; returns '' | 'stop' | 'end' */
+function coreStep() {
+  let state;
+  try { state = emu.step(); }
+  catch (err) {
+    if (!(err instanceof EmergencyStop)) throw err;
+    logMessage("error", t("msgEmergency", err.message));
+    state = "end";
+  }
+  while (emu.messages.length) {
+    const m = emu.messages.shift(); logMessage(m.kind, m.text);
+  }
+  if (state === "end") {
+    el("btn-start").disabled = true; el("btn-step").disabled = true;
+    logMessage("stop", t("msgRunEnd", emu.steps));
+  }
+  return state;
+}
+
+function buildProgress() {
+  const bar = el("progress-bar"); bar.innerHTML = "";
+  program.forEach((b, i) => {
+    const seg = document.createElement("div");
+    seg.className = "seg" + (b.empty ? " empty" : "") +
+      (i > 0 && i % 10 === 0 ? " card-gap" : "");
+    bar.appendChild(seg);
+  });
+}
+function paintProgress() {
+  if (!emu) return;
+  const segs = el("progress-bar").children;
+  let visited = 0, total = 0;
+  for (let i = 0; i < program.length; i++) {
+    if (!program[i].empty) { total += 1; if (emu.visited[i] > 0) visited += 1; }
+    const n = emu.visited[i];
+    const heat = n === 0 ? "" : n === 1 ? " h1" : n < 10 ? " h2" : " h3";
+    segs[i].className = "seg" + (program[i].empty ? " empty" : "") +
+      (i > 0 && i % 10 === 0 ? " card-gap" : "") + heat +
+      (i === emu.pc ? " now" : "");
+  }
+  const percent = total ? Math.round(100 * visited / total) : 0;
+  el("progress-text").innerHTML = t("progressText", percent, visited, total);
+}
+
+function render() { paintConsole(); paintMemory(); showListing(); paintProgress(); markCommand(emu.pc); }
+
+function singleStep() {
+  if (!emu) return "end";
+  const state = coreStep();
+  if (state === "end") stopRun();
+  render();
+  return state;
+}
+
+function stopRun() {
+  if (runTimer) { clearInterval(runTimer); runTimer = null; }
+  el("btn-start").textContent = t("start");
+}
+
+/* run loop: execute in batches, render once per tick (~12 fps).
+   Stage 1 is deliberately slow enough to follow every hole flash. */
+const SPEED_STEPS_PER_SEC = [0, 0.6, 1.2, 3, 8, 20, 60, 250, 1000, 4000, 12000];
+let speedCarry = 0;
+function toggleRun() {
+  if (runTimer) { stopRun(); return; }
+  el("btn-start").textContent = t("pause");
+  speedCarry = 0;
+  runTimer = setInterval(() => {
+    speedCarry += SPEED_STEPS_PER_SEC[+el("speed").value] * 0.083;
+    const n = Math.floor(speedCarry);
+    if (n <= 0) return;
+    speedCarry -= n;
+    for (let i = 0; i < n; i++) {
+      const state = coreStep();
+      if (state === "end") { stopRun(); break; }
+      if (state === "stop" && el("pause-at-stop").checked) { stopRun(); break; }
+      if (emu.steps > 500000) {
+        logMessage("error", t("msgLimit"));
+        stopRun(); break;
+      }
+    }
+    render();
+  }, 83);
+}
+
+function applyLanguage() {
+  document.documentElement.lang = LANG;
+  el("subtitle").textContent = t("subtitle");
+  for (const [id, key] of [["t-deck-panel","deckPanel"],["t-cards","cards"],
+      ["t-console","console"],["t-stops","stops"],["t-listing","listing"],
+      ["t-memory","memory"],["t-inputs","inputs"],["t-speed","speed"],
+      ["t-stop-pause","stopPause"],["t-code19","code19"],["t-dec","dec"],
+      ["t-progress","progress"]])
+    el(id).textContent = t(key);
+  el("t-inputs-hint").innerHTML = t("inputsHint");
+  el("inputs").placeholder = t("inputsPh").replace("\\n", "\n");
+  el("btn-start").textContent = runTimer ? t("pause") : t("start");
+  el("btn-step").textContent = t("step");
+  el("btn-reset").textContent = t("reset");
+  el("cell-info").innerHTML = t("cellInfo0");
+  const ph = el("stops").querySelector(".placeholder");
+  if (ph) ph.textContent = t("placeholder");
+  document.querySelectorAll(".langs button").forEach(b =>
+    b.classList.toggle("active", b.dataset.lang === LANG));
+  applyTheme();
+  fillDeckSelect();
+  showCards(DECKS[deckIndex]);
+  el("deck-hint").textContent = tDeckHint(DECKS[deckIndex]);
+  if (emu) { paintConsole(); showListing(); paintProgress(); markCommand(emu.pc, false); }
+}
+document.querySelectorAll(".langs button").forEach(b => b.onclick = () => {
+  LANG = b.dataset.lang;
+  localStorage.setItem("promin2-lang", LANG);
+  applyLanguage();
+});
+
+function applyTheme() {
+  document.documentElement.dataset.theme = THEME;
+  document.querySelectorAll(".themes button").forEach(b => {
+    b.classList.toggle("active", b.dataset.theme === THEME);
+    b.title = t({dark: "themeDark", soviet: "themeSoviet", bright: "themeBright"}[b.dataset.theme]);
+  });
+}
+document.querySelectorAll(".themes button").forEach(b => b.onclick = () => {
+  THEME = b.dataset.theme;
+  localStorage.setItem("promin2-theme", THEME);
+  applyTheme();
+});
+
+el("deck-select").onchange = e => { deckIndex = +e.target.value;
+  showCards(DECKS[deckIndex]); el("deck-hint").textContent = tDeckHint(DECKS[deckIndex]);
+  reset(); };
+el("btn-start").onclick = toggleRun;
+el("btn-step").onclick = () => { stopRun(); singleStep(); };
+el("btn-reset").onclick = reset;
+el("speed").oninput = () => { speedCarry = 0; };
+el("code19sh").onchange = reset;
+
+buildMemoryGrid();
+applyLanguage();
+applyTheme();
+reset();
+</script>
+</body>
+</html>
