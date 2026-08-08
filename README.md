@@ -10,6 +10,58 @@ The chain this project builds: punched metal cards → bits and cell addresses �
 instruction and constant format. As far as I can tell it is the first public
 description of any of it.
 
+## How the machine reads a card
+
+The Промінь-2 has one accumulator and nothing much else. Numbers are decimal
+floating point, N = M·10^P: five mantissa digits, one exponent digit, a sign
+for each. Instructions live in cells 000–159, numbers in 000–199, and the
+cells 080–099 and 180–199 hold a read-only table of constants: π, 1, 2π, ln10
+and the address unit among them.
+
+The program is never loaded into memory. It *is* the card. An aluminium card
+works as a mask over a row of contact pins: metal left standing closes a
+contact, a punched hole breaks it. The machine reads by touching, and a hole
+therefore **clears** the weight at that position instead of setting it. That
+polarity is the one thing this reconstruction leans on hardest; the argument
+and the counter-test are in `01_handoff/HANDOFF_promin2_v3.md`.
+
+A card carries 30 columns in ten groups of three, one instruction per group:
+
+| Column of the group | Weights, top to bottom | Yields |
+|---|---|---|
+| 1 | 16 · 8 · 4 · 2 · 1 | the operation code, 0–31 |
+| 2 | 5 · 2 · 1 · 1 · 1 | the tens digit; row 5 carries the hundreds |
+| 3 | 5 · 2 · 1 · 1 | the units digit |
+
+So ten instructions per card, each an operation plus a three-digit cell
+address. A slot that was never punched leaves every weight standing and reads
+arithmetically as `Ост 199`, which is how an unused slot gives itself away.
+
+The weights are printed on the card at every single position, and on a punched
+card they survive exactly where no hole covers them. This is what the
+extraction sees:
+
+<img src="04_extraction/04_flat_scan_grid.png" width="100%" alt="Flat 200 dpi scan of card 1 of the АУ deck. Detected holes are circled in red, the five rows drawn in orange, the fitted 30-column grid in blue. In the unpunched positions the printed weight digits 16, 8, 4, 2, 1 and 5, 2, 1, 1 remain legible.">
+
+Red circles are the holes the detector found, orange the five rows, blue the
+fitted column comb. The comb is fitted rather than clustered because a column
+in which all five positions are punched leaves no holes at all and would
+otherwise go missing, shifting every field behind it.
+
+Read a column top to bottom and add up the weights that are still **visible**.
+The first group of this card:
+
+```
+column 1   metal on 4 and 2          ->  6  = Чт, read into the accumulator
+column 2   metal on 5, row 5 punched ->  5  = tens digit, hundreds 0
+column 3   metal on 1                ->  1  = units digit
+                                         => Чт 051
+```
+
+Which is the first instruction of the deck `!_полная_АУ`, the arithmetic unit
+test: read cell 051. The remaining nine groups of this one card give the rest
+of the opening sequence quoted in handoff v3.
+
 ## Where the project stands
 
 Authoritative document: `01_handoff/HANDOFF_promin2_v3.md`.
@@ -47,7 +99,7 @@ from the one slanted museum photograph and disappeared with the flat scans.
 | | |
 |---|---|
 | `01_handoff/` | three handoff documents; **v3 is the authoritative one** |
-| `04_extraction/` | results from the single photograph: rectified plate, 64 detected holes annotated, hole coordinates as CSV |
+| `04_extraction/` | `00`–`03` results from the single photograph: rectified plate, 64 detected holes annotated, hole coordinates as CSV. `04` one control image from the flat-scan pipeline, the one shown above |
 | `05_method_d328/` | **a template, not the target.** The already dumped Д3-28 microcode with the field and entropy analysis that took it apart, as a pattern for doing the same here |
 | `06_scripts/` | `extract_flat_scan.py` scan → cards → 5×30 hole matrix; `decode_card.py` matrix → instructions |
 | `08_tangible_media/` | photograph of an **unpunched** aluminium card of the same build. Because no hole covers anything, the printed coding legend on it is fully readable. This is the key to the format |
@@ -128,7 +180,11 @@ contributed any of this material and want it taken out, write to
 elara@elaranovikova.com and it goes.
 
 The code, the extraction and decoding scripts, the reconstructed listings and
-the emulator are my own work.
+the emulator are my own work. They are licensed in layers, because one licence
+cannot cover a repository that carries other people's material: `LICENSE` is
+MIT and covers the code, `LICENSE-DOCS` puts my prose and my decoding under
+CC BY 4.0 and marks the boundaries, and `08_tangible_media/LICENSE` is
+Wallace's CC BY-NC 4.0, which is why that folder cannot be used commercially.
 
 ## The web emulator
 

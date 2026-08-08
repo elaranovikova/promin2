@@ -1,0 +1,30 @@
+The MIT License in LICENSE covers the code: 06_scripts/, 10_emulator/ and the
+two analysis scripts in 05_method_d328/.
+
+The prose I wrote myself (README.md, the three documents in 01_handoff/, the
+READMEs and the analysis in 09_programs/ and 08_tangible_media/) is licensed
+under Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+    https://creativecommons.org/licenses/by/4.0/
+
+Three boundaries run through this, and they matter more than the licenses do.
+
+The decoded card data is the awkward one. The instruction bands in
+09_programs/ and the hole patterns in 10_emulator/web/decks.js are my reading
+of Radon's scans, and the reading is my work: the grid fitting, the polarity
+argument, the deck order and its cross-checks. What sits underneath is his.
+He scanned 222 metal cards and put them up in the thread named in the README,
+under no license at all. So I place my transcription and analysis under CC BY
+4.0, and I do not claim, and cannot grant, anything about the scans
+themselves. If you build on this, credit him as well as me.
+
+08_tangible_media/ is not mine at all. The photograph of the unpunched card
+and the two archived HTML pages are John Wallace's, Creative Commons
+BY-NC 4.0, and his notice sits next to them in 08_tangible_media/LICENSE. Note
+the NC: that folder cannot be used commercially, whatever the MIT License in
+LICENSE says about the rest.
+
+05_method_d328/pel3_065_001__rom.txt and .zip are a Д3-28 microcode dump from
+a public archive of 8 May 2018. I do not know who dumped it. It is here as a
+worked example of the method, not as material about the Промінь, and it
+carries whatever status it carried before I found it.
