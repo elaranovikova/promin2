@@ -199,3 +199,6 @@ Wallace's CC BY-NC 4.0, which is why that folder cannot be used commercially.
 `10_emulator/web/` is the browser build. The version published at
 `elaranovikova.com/projects/promin-2/` has moved on from it and is the one to
 look at for anything user-facing; this copy is the one the tests run against.
+
+There is a video too, on how the cards are read and what came out of them:
+`youtu.be/Qvjrg_Fylx8`.

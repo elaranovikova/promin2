@@ -14,6 +14,8 @@
     --pc-bg: rgba(232,180,74,.22); --pc-text: #ffd98a; --empty-text: #566069;
     --cell-bg: #2a3038; --cell-const: #3a3325; --cell-changed: #6b8f3d;
     --flash: #ff6440; --cards-filter: none;
+    --engrave: #090a0c; --engrave-lip: rgba(255,255,255,.50);
+    --engrave-bloom: rgba(255,255,255,.10); --engrave-top: rgba(0,0,0,1);
     --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   }
   html[data-theme="soviet"] {
@@ -26,6 +28,8 @@
     --cell-bg: #38201d; --cell-const: #4a3517; --cell-changed: #7d8f3d;
     --flash: #ffd23f;
     --cards-filter: sepia(.5) saturate(1.6) hue-rotate(-28deg);
+    --engrave: #080302; --engrave-lip: rgba(255,206,186,.46);
+    --engrave-bloom: rgba(255,206,186,.10); --engrave-top: rgba(0,0,0,1);
   }
   html[data-theme="bright"] {
     --bg: #eef0f2; --panel: #ffffff; --panel2: #f2f4f6; --border: #d4d9df;
@@ -36,24 +40,23 @@
     --pc-bg: rgba(178,106,0,.16); --pc-text: #8a5200; --empty-text: #9aa4ae;
     --cell-bg: #dde2e8; --cell-const: #ecdfb0; --cell-changed: #93c46a;
     --flash: #e03a20;
+    --engrave: #b7bec6; --engrave-lip: rgba(255,255,255,1);
+    --engrave-bloom: rgba(255,255,255,.6); --engrave-top: rgba(0,0,0,.42);
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 14px/1.45 system-ui, sans-serif; }
   header { padding: 14px 20px 10px; border-bottom: 1px solid var(--border);
            display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-  header h1 { font-size: 17px; margin: 0; letter-spacing: .06em;
-    /* nameplate: brushed metal, stamped-in text (light below, dark above) */
-    background: linear-gradient(180deg, #cdd2d8, #a9afb6 55%, #c4c9cf);
-    color: #3d4248;
-    padding: 7px 16px 6px;
-    border-radius: 5px;
-    border: 1px solid #82898f;
-    box-shadow: inset 0 1px 1px rgba(255,255,255,.7),
-                inset 0 -1px 2px rgba(0,0,0,.28),
-                0 1px 3px rgba(0,0,0,.35);
-    text-shadow: 0 1px 0 rgba(255,255,255,.65), 0 -1px 1px rgba(0,0,0,.5);
-    filter: var(--cards-filter); }
+  header h1 { font-size: 17px; margin: 0; padding: 0; letter-spacing: .06em;
+    /* Pressed into the screen itself, not into a plate laid over it. So no
+       panel of its own: the letter face sits a shade below the surround, the
+       lower lip catches the light and the upper edge keeps the shadow. The
+       lip is what draws the letters, not the difference in face colour: a
+       first try at 13 % white was a true engraving and unreadable with it. */
+    color: var(--engrave);
+    text-shadow: 0 1px 0 var(--engrave-lip), 0 2px 2px var(--engrave-bloom),
+                 0 -1px 1px var(--engrave-top); }
   #emblem { height: 36px; width: auto; flex: 0 0 auto; align-self: center;
             filter: drop-shadow(0 1px 1px rgba(0,0,0,.45)); }
   header .sub { color: var(--dim); font-size: 12.5px; }
